@@ -2,7 +2,7 @@
 {
     public class SubjectDTO
     {
-        public int Code { get; set; }
+        public string Code { get; set; } = null!;
 
         public string? Title { get; set; }
     }

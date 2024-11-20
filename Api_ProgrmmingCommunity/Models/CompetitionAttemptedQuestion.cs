@@ -17,6 +17,8 @@ public partial class CompetitionAttemptedQuestion
 
     public TimeOnly? SubmissionTime { get; set; }
 
+   
+
     public virtual CompetitionRoundQuestion? CompetitionRoundQuestion { get; set; }
 
     public virtual User? User { get; set; }

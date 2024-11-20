@@ -6,9 +6,7 @@ namespace Api_ProgrmmingCommunity.Models;
 
 public partial class ProgrammingCommunityContext : DbContext
 {
-    public ProgrammingCommunityContext()
-    {
-    }
+  
 
     public ProgrammingCommunityContext(DbContextOptions<ProgrammingCommunityContext> options)
         : base(options)
@@ -35,6 +33,8 @@ public partial class ProgrammingCommunityContext : DbContext
 
     public virtual DbSet<RoundQualificationCriterion> RoundQualificationCriteria { get; set; }
 
+    public virtual DbSet<StudentSubject> StudentSubjects { get; set; }
+
     public virtual DbSet<Subject> Subjects { get; set; }
 
     public virtual DbSet<SubmittedTask> SubmittedTasks { get; set; }
@@ -55,11 +55,9 @@ public partial class ProgrammingCommunityContext : DbContext
     {
         modelBuilder.Entity<Competition>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Competit__3213E83F22CDB11B");
+            entity.HasKey(e => e.Id).HasName("PK__Competit__3213E83FF361F475");
 
-            entity.Property(e => e.Id)
-                .ValueGeneratedNever()
-                .HasColumnName("id");
+            entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.MaxLevel).HasColumnName("max_level");
             entity.Property(e => e.MinLevel).HasColumnName("min_level");
             entity.Property(e => e.Title)
@@ -71,130 +69,131 @@ public partial class ProgrammingCommunityContext : DbContext
 
         modelBuilder.Entity<CompetitionAttemptedQuestion>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Competit__3213E83F8A10BB9C");
+            entity.HasKey(e => e.Id).HasName("PK__Competit__3213E83F4B90B47B");
 
-            entity.Property(e => e.Id)
-                .ValueGeneratedNever()
-                .HasColumnName("id");
+            entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.Answer)
                 .IsUnicode(false)
                 .HasColumnName("answer");
             entity.Property(e => e.CompetitionRoundQuestionId).HasColumnName("competition_round_question_id");
+          
             entity.Property(e => e.Score).HasColumnName("score");
             entity.Property(e => e.SubmissionTime).HasColumnName("submission_time");
             entity.Property(e => e.UserId).HasColumnName("user_id");
 
             entity.HasOne(d => d.CompetitionRoundQuestion).WithMany(p => p.CompetitionAttemptedQuestions)
                 .HasForeignKey(d => d.CompetitionRoundQuestionId)
-                .HasConstraintName("FK__Competiti__compe__6754599E");
+                .HasConstraintName("FK__Competiti__compe__7A672E12");
 
             entity.HasOne(d => d.User).WithMany(p => p.CompetitionAttemptedQuestions)
                 .HasForeignKey(d => d.UserId)
-                .HasConstraintName("FK__Competiti__user___68487DD7");
+                .HasConstraintName("FK__Competiti__user___7B5B524B");
         });
 
         modelBuilder.Entity<CompetitionMember>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Competit__3213E83FCD1B3DF3");
+            entity.HasKey(e => e.Id).HasName("PK__Competit__3213E83FF8B461D0");
 
-            entity.Property(e => e.Id)
-                .ValueGeneratedNever()
-                .HasColumnName("id");
+            entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.CompetitionId).HasColumnName("competition_id");
+            
             entity.Property(e => e.UserId).HasColumnName("user_id");
 
             entity.HasOne(d => d.Competition).WithMany(p => p.CompetitionMembers)
                 .HasForeignKey(d => d.CompetitionId)
-                .HasConstraintName("FK__Competiti__compe__5FB337D6");
+                .HasConstraintName("FK__Competiti__compe__70DDC3D8");
 
             entity.HasOne(d => d.User).WithMany(p => p.CompetitionMembers)
                 .HasForeignKey(d => d.UserId)
-                .HasConstraintName("FK__Competiti__user___60A75C0F");
+                .HasConstraintName("FK__Competiti__user___71D1E811");
         });
 
         modelBuilder.Entity<CompetitionRound>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Competit__3213E83FBA467330");
+            entity.HasKey(e => e.Id).HasName("PK__Competit__3213E83F6DC85EC6");
 
-            entity.Property(e => e.Id)
-                .ValueGeneratedNever()
-                .HasColumnName("id");
+            entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.CompetitionId).HasColumnName("competition_id");
             entity.Property(e => e.Date).HasColumnName("date");
+           
             entity.Property(e => e.RoundNumber).HasColumnName("round_number");
             entity.Property(e => e.RoundType).HasColumnName("round_type");
 
             entity.HasOne(d => d.Competition).WithMany(p => p.CompetitionRounds)
                 .HasForeignKey(d => d.CompetitionId)
-                .HasConstraintName("FK__Competiti__compe__59063A47");
+                .HasConstraintName("FK__Competiti__compe__68487DD7");
         });
 
         modelBuilder.Entity<CompetitionRoundQuestion>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Competit__3213E83F8CB9EFFD");
+            entity.HasKey(e => e.Id).HasName("PK__Competit__3213E83FA0ADAC06");
 
-            entity.Property(e => e.Id)
-                .ValueGeneratedNever()
-                .HasColumnName("id");
+            entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.CompetitionRoundId).HasColumnName("competition_round_id");
+            
+               
             entity.Property(e => e.QuestionId).HasColumnName("question_id");
 
             entity.HasOne(d => d.CompetitionRound).WithMany(p => p.CompetitionRoundQuestions)
                 .HasForeignKey(d => d.CompetitionRoundId)
-                .HasConstraintName("FK__Competiti__compe__5BE2A6F2");
+                .HasConstraintName("FK__Competiti__compe__6C190EBB");
 
             entity.HasOne(d => d.Question).WithMany(p => p.CompetitionRoundQuestions)
                 .HasForeignKey(d => d.QuestionId)
-                .HasConstraintName("FK__Competiti__quest__5CD6CB2B");
+                .HasConstraintName("FK__Competiti__quest__6D0D32F4");
         });
 
         modelBuilder.Entity<ExpertSubject>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__ExpertSu__3213E83F76334420");
+            entity.HasKey(e => e.Id).HasName("PK__ExpertSu__3213E83FACD9EA58");
 
-            entity.Property(e => e.Id)
-                .ValueGeneratedNever()
-                .HasColumnName("id");
+            entity.Property(e => e.Id).HasColumnName("id");
+           
+                
             entity.Property(e => e.ExpertId).HasColumnName("expert_id");
-            entity.Property(e => e.SubjectCode).HasColumnName("subject_code");
+            entity.Property(e => e.SubjectCode)
+                .HasMaxLength(255)
+                .IsUnicode(false)
+                .HasColumnName("subject_code");
 
             entity.HasOne(d => d.Expert).WithMany(p => p.ExpertSubjects)
                 .HasForeignKey(d => d.ExpertId)
-                .HasConstraintName("FK__ExpertSub__exper__3E52440B");
+                .HasConstraintName("FK__ExpertSub__exper__412EB0B6");
 
             entity.HasOne(d => d.SubjectCodeNavigation).WithMany(p => p.ExpertSubjects)
                 .HasForeignKey(d => d.SubjectCode)
-                .HasConstraintName("FK__ExpertSub__subje__3F466844");
+                .HasConstraintName("FK__ExpertSub__subje__4222D4EF");
         });
 
         modelBuilder.Entity<ExpertTopic>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__ExpertTo__3213E83FA27CC8ED");
+            entity.HasKey(e => e.Id).HasName("PK__ExpertTo__3213E83FC84FE6B8");
 
-            entity.Property(e => e.Id)
-                .ValueGeneratedNever()
-                .HasColumnName("id");
+            entity.Property(e => e.Id).HasColumnName("id");
+         
             entity.Property(e => e.ExpertId).HasColumnName("expert_id");
             entity.Property(e => e.TopicId).HasColumnName("topic_id");
 
             entity.HasOne(d => d.Expert).WithMany(p => p.ExpertTopics)
                 .HasForeignKey(d => d.ExpertId)
-                .HasConstraintName("FK__ExpertTop__exper__4222D4EF");
+                .HasConstraintName("FK__ExpertTop__exper__4AB81AF0");
 
             entity.HasOne(d => d.Topic).WithMany(p => p.ExpertTopics)
                 .HasForeignKey(d => d.TopicId)
-                .HasConstraintName("FK__ExpertTop__topic__4316F928");
+                .HasConstraintName("FK__ExpertTop__topic__4BAC3F29");
         });
 
         modelBuilder.Entity<Question>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Question__3213E83F151A3242");
+            entity.HasKey(e => e.Id).HasName("PK__Question__3213E83F157AFD38");
 
-            entity.Property(e => e.Id)
-                .ValueGeneratedNever()
-                .HasColumnName("id");
+            entity.Property(e => e.Id).HasColumnName("id");
+           
             entity.Property(e => e.Difficulty).HasColumnName("difficulty");
-            entity.Property(e => e.SubjectCode).HasColumnName("subject_code");
+            entity.Property(e => e.SubjectCode)
+                .HasMaxLength(255)
+                .IsUnicode(false)
+                .HasColumnName("subject_code");
             entity.Property(e => e.Text)
                 .IsUnicode(false)
                 .HasColumnName("text");
@@ -204,24 +203,23 @@ public partial class ProgrammingCommunityContext : DbContext
 
             entity.HasOne(d => d.SubjectCodeNavigation).WithMany(p => p.Questions)
                 .HasForeignKey(d => d.SubjectCode)
-                .HasConstraintName("FK__Questions__subje__45F365D3");
+                .HasConstraintName("FK__Questions__subje__4F7CD00D");
 
             entity.HasOne(d => d.Topic).WithMany(p => p.Questions)
                 .HasForeignKey(d => d.TopicId)
-                .HasConstraintName("FK__Questions__topic__46E78A0C");
+                .HasConstraintName("FK__Questions__topic__5070F446");
 
             entity.HasOne(d => d.User).WithMany(p => p.Questions)
                 .HasForeignKey(d => d.UserId)
-                .HasConstraintName("FK__Questions__user___47DBAE45");
+                .HasConstraintName("FK__Questions__user___5165187F");
         });
 
         modelBuilder.Entity<QuestionOption>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Question__3213E83F4BE9B103");
+            entity.HasKey(e => e.Id).HasName("PK__Question__3213E83FF4397D4F");
 
-            entity.Property(e => e.Id)
-                .ValueGeneratedNever()
-                .HasColumnName("id");
+            entity.Property(e => e.Id).HasColumnName("id");
+         
             entity.Property(e => e.IsCorrect).HasColumnName("isCorrect");
             entity.Property(e => e.Option)
                 .HasMaxLength(255)
@@ -231,36 +229,58 @@ public partial class ProgrammingCommunityContext : DbContext
 
             entity.HasOne(d => d.Question).WithMany(p => p.QuestionOptions)
                 .HasForeignKey(d => d.QuestionId)
-                .HasConstraintName("FK__QuestionO__quest__4AB81AF0");
+                .HasConstraintName("FK__QuestionO__quest__5535A963");
         });
 
         modelBuilder.Entity<RoundQualificationCriterion>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__RoundQua__3213E83F3370D580");
+            entity.HasKey(e => e.Id).HasName("PK__RoundQua__3213E83F4F01D92F");
 
-            entity.Property(e => e.Id)
-                .ValueGeneratedNever()
-                .HasColumnName("id");
+            entity.Property(e => e.Id).HasColumnName("id");
+          
             entity.Property(e => e.FromRoundId).HasColumnName("from_round_id");
             entity.Property(e => e.ToRoundId).HasColumnName("to_round_id");
             entity.Property(e => e.TopTeams).HasColumnName("top_teams");
 
             entity.HasOne(d => d.FromRound).WithMany(p => p.RoundQualificationCriterionFromRounds)
                 .HasForeignKey(d => d.FromRoundId)
-                .HasConstraintName("FK__RoundQual__from___6383C8BA");
+                .HasConstraintName("FK__RoundQual__from___75A278F5");
 
             entity.HasOne(d => d.ToRound).WithMany(p => p.RoundQualificationCriterionToRounds)
                 .HasForeignKey(d => d.ToRoundId)
-                .HasConstraintName("FK__RoundQual__to_ro__6477ECF3");
+                .HasConstraintName("FK__RoundQual__to_ro__76969D2E");
+        });
+
+        modelBuilder.Entity<StudentSubject>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__StudentS__3213E83FED987104");
+
+            entity.Property(e => e.Id).HasColumnName("id");
+           
+            entity.Property(e => e.StudentId).HasColumnName("student_id");
+            entity.Property(e => e.SubjectCode)
+                .HasMaxLength(255)
+                .IsUnicode(false)
+                .HasColumnName("subject_code");
+
+            entity.HasOne(d => d.Student).WithMany(p => p.StudentSubjects)
+                .HasForeignKey(d => d.StudentId)
+                .HasConstraintName("FK__StudentSu__stude__45F365D3");
+
+            entity.HasOne(d => d.SubjectCodeNavigation).WithMany(p => p.StudentSubjects)
+                .HasForeignKey(d => d.SubjectCode)
+                .HasConstraintName("FK__StudentSu__subje__46E78A0C");
         });
 
         modelBuilder.Entity<Subject>(entity =>
         {
-            entity.HasKey(e => e.Code).HasName("PK__Subjects__357D4CF8D1FB508F");
+            entity.HasKey(e => e.Code).HasName("PK__Subjects__357D4CF81196E165");
 
             entity.Property(e => e.Code)
-                .ValueGeneratedNever()
+                .HasMaxLength(255)
+                .IsUnicode(false)
                 .HasColumnName("code");
+         
             entity.Property(e => e.Title)
                 .IsUnicode(false)
                 .HasColumnName("title");
@@ -268,14 +288,13 @@ public partial class ProgrammingCommunityContext : DbContext
 
         modelBuilder.Entity<SubmittedTask>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Submitte__3213E83F6D426798");
+            entity.HasKey(e => e.Id).HasName("PK__Submitte__3213E83F95DF9823");
 
-            entity.Property(e => e.Id)
-                .ValueGeneratedNever()
-                .HasColumnName("id");
+            entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.Answer)
                 .IsUnicode(false)
                 .HasColumnName("answer");
+          
             entity.Property(e => e.Score).HasColumnName("score");
             entity.Property(e => e.SubmissionDate).HasColumnName("submission_date");
             entity.Property(e => e.SubmissionTime).HasColumnName("submission_time");
@@ -284,20 +303,19 @@ public partial class ProgrammingCommunityContext : DbContext
 
             entity.HasOne(d => d.Taskquestion).WithMany(p => p.SubmittedTasks)
                 .HasForeignKey(d => d.TaskquestionId)
-                .HasConstraintName("FK__Submitted__taskq__534D60F1");
+                .HasConstraintName("FK__Submitted__taskq__60A75C0F");
 
             entity.HasOne(d => d.User).WithMany(p => p.SubmittedTasks)
                 .HasForeignKey(d => d.UserId)
-                .HasConstraintName("FK__Submitted__user___5441852A");
+                .HasConstraintName("FK__Submitted__user___619B8048");
         });
 
         modelBuilder.Entity<Task>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Tasks__3213E83FFBC03264");
+            entity.HasKey(e => e.Id).HasName("PK__Tasks__3213E83FE2E801A1");
 
-            entity.Property(e => e.Id)
-                .ValueGeneratedNever()
-                .HasColumnName("id");
+            entity.Property(e => e.Id).HasColumnName("id");
+           
             entity.Property(e => e.EndDate).HasColumnName("endDate");
             entity.Property(e => e.MaxLevel).HasColumnName("max_level");
             entity.Property(e => e.MinLevel).HasColumnName("min_level");
@@ -306,31 +324,32 @@ public partial class ProgrammingCommunityContext : DbContext
 
         modelBuilder.Entity<TaskQuestion>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__TaskQues__3213E83FBC5C8F10");
+            entity.HasKey(e => e.Id).HasName("PK__TaskQues__3213E83F0FF9D0AC");
 
-            entity.Property(e => e.Id)
-                .ValueGeneratedNever()
-                .HasColumnName("id");
+            entity.Property(e => e.Id).HasColumnName("id");
+            
             entity.Property(e => e.QuestionId).HasColumnName("question_id");
             entity.Property(e => e.TaskId).HasColumnName("task_id");
 
             entity.HasOne(d => d.Question).WithMany(p => p.TaskQuestions)
                 .HasForeignKey(d => d.QuestionId)
-                .HasConstraintName("FK__TaskQuest__quest__5070F446");
+                .HasConstraintName("FK__TaskQuest__quest__5CD6CB2B");
 
             entity.HasOne(d => d.Task).WithMany(p => p.TaskQuestions)
                 .HasForeignKey(d => d.TaskId)
-                .HasConstraintName("FK__TaskQuest__task___4F7CD00D");
+                .HasConstraintName("FK__TaskQuest__task___5BE2A6F2");
         });
 
         modelBuilder.Entity<Topic>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Topics__3213E83F25040EEE");
+            entity.HasKey(e => e.Id).HasName("PK__Topics__3213E83F0417B0BD");
 
-            entity.Property(e => e.Id)
-                .ValueGeneratedNever()
-                .HasColumnName("id");
-            entity.Property(e => e.SubjectCode).HasColumnName("subject_code");
+            entity.Property(e => e.Id).HasColumnName("id");
+           
+            entity.Property(e => e.SubjectCode)
+                .HasMaxLength(255)
+                .IsUnicode(false)
+                .HasColumnName("subject_code");
             entity.Property(e => e.Title)
                 .HasMaxLength(255)
                 .IsUnicode(false)
@@ -338,18 +357,27 @@ public partial class ProgrammingCommunityContext : DbContext
 
             entity.HasOne(d => d.SubjectCodeNavigation).WithMany(p => p.Topics)
                 .HasForeignKey(d => d.SubjectCode)
-                .HasConstraintName("FK__Topics__subject___3B75D760");
+                .HasConstraintName("FK__Topics__subject___3D5E1FD2");
         });
 
         modelBuilder.Entity<User>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Users__3213E83F2341640B");
+            entity.HasKey(e => e.Id).HasName("PK__Users__3213E83F4B54B45E");
 
             entity.Property(e => e.Id).HasColumnName("id");
+           
             entity.Property(e => e.Email)
                 .HasMaxLength(255)
                 .IsUnicode(false)
                 .HasColumnName("email");
+            entity.Property(e => e.Firstname)
+                .HasMaxLength(255)
+                .IsUnicode(false)
+                .HasColumnName("firstname");
+            entity.Property(e => e.Lastname)
+                .HasMaxLength(255)
+                .IsUnicode(false)
+                .HasColumnName("lastname");
             entity.Property(e => e.Password)
                 .HasMaxLength(255)
                 .IsUnicode(false)

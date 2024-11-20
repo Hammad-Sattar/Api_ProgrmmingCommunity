@@ -7,9 +7,11 @@ public partial class Topic
 {
     public int Id { get; set; }
 
-    public int? SubjectCode { get; set; }
+    public string? SubjectCode { get; set; }
 
     public string? Title { get; set; }
+
+   
 
     public virtual ICollection<ExpertTopic> ExpertTopics { get; set; } = new List<ExpertTopic>();
 

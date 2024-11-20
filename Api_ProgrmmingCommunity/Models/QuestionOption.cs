@@ -13,5 +13,7 @@ public partial class QuestionOption
 
     public bool? IsCorrect { get; set; }
 
+   
+
     public virtual Question? Question { get; set; }
 }

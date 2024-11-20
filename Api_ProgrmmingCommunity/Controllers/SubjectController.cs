@@ -14,8 +14,8 @@ public class SubjectController : ControllerBase
     }
 
     // GET: api/Subject
-    [HttpGet]
-    public IActionResult GetSubjects()
+    [HttpGet("GetAllSubjects")]
+    public IActionResult GetAllSubjects()
     {
         var subjects = _context.Subjects
             .Select(s => new SubjectDTO
@@ -28,8 +28,8 @@ public class SubjectController : ControllerBase
     }
 
     // GET: api/Subject/{Code}
-    [HttpGet("{Code}")]
-    public IActionResult GetSubjectByCode(int Code)
+    [HttpGet("GetSubjectByCode/{Code}")]
+    public IActionResult GetSubjectByCode(string Code)
     {
         var subject = _context.Subjects
             .Where(s => s.Code == Code)
@@ -50,7 +50,7 @@ public class SubjectController : ControllerBase
 
     // POST: api/Subject
     [HttpPost]
-    public IActionResult CreateSubject([FromBody] SubjectDTO subjectDTO)
+    public IActionResult CreateSubject([FromForm] SubjectDTO subjectDTO)
     {
         if (subjectDTO == null)
         {
@@ -71,7 +71,7 @@ public class SubjectController : ControllerBase
 
     // PUT: api/Subject/{Code}
     [HttpPut("{Code}")]
-    public IActionResult UpdateSubject(int Code, [FromBody] SubjectDTO subjectDTO)
+    public IActionResult UpdateSubject(string Code, [FromForm] SubjectDTO subjectDTO)
     {
         if (subjectDTO == null)
         {
@@ -95,7 +95,7 @@ public class SubjectController : ControllerBase
 
     // DELETE: api/Subject/{Code}
     [HttpDelete("{Code}")]
-    public IActionResult DeleteSubject(int Code)
+    public IActionResult DeleteSubject(string Code)
     {
         var subject = _context.Subjects.FirstOrDefault(s => s.Code == Code);
         if (subject == null)

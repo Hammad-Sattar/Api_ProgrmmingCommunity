@@ -15,41 +15,35 @@ namespace Api_ProgrmmingCommunity.Controllers
         {
             _context = context;
         }
-
-        // POST: api/User
-        [HttpPost]
-        public IActionResult CreateUser([FromBody] UserDTO userCreateDTO)
+        [HttpPost("login")]
+        public IActionResult Login([FromForm] LoginDTO loginDTO)
         {
-            if (userCreateDTO == null)
+            if (loginDTO == null || string.IsNullOrWhiteSpace(loginDTO.Email) || string.IsNullOrWhiteSpace(loginDTO.Password))
             {
-                return BadRequest("User data is null.");
+                return BadRequest("Invalid login details.");
             }
 
-            // Map the DTO to the User model
-            var user = new User
+            // Find the user by email
+            var user = _context.Users.FirstOrDefault(u => u.Email == loginDTO.Email);
+
+            if (user == null)
             {
-                Password = userCreateDTO.Password,
-                Profimage = userCreateDTO.Profimage,
-                Role = userCreateDTO.Role,
-               
-                RegNum = userCreateDTO.RegNum,
-                Section = userCreateDTO.Section,
-                Semester = userCreateDTO.Semester,
-                Email = userCreateDTO.Email,
-                Phonenum = userCreateDTO.Phonenum
-            };
+                return Unauthorized("Email not found.");
+            }
 
-            // Add the user to the database
-            _context.Users.Add(user);
-            _context.SaveChanges();
+            // Check if the password matches
+            if (user.Password != loginDTO.Password)
+            {
+                return Unauthorized("Incorrect password.");
+            }
 
-            // Return a 201 Created response with the created UserDTO
+            // Create a response DTO
             var userDTO = new UserDTO
             {
+                Id = user.Id,
                 Password = user.Password,
                 Profimage = user.Profimage,
                 Role = user.Role,
-             
                 RegNum = user.RegNum,
                 Section = user.Section,
                 Semester = user.Semester,
@@ -57,11 +51,59 @@ namespace Api_ProgrmmingCommunity.Controllers
                 Phonenum = user.Phonenum
             };
 
+            return Ok(userDTO);
+        }
+
+        // POST: api/User
+        [HttpPost("Signup")]
+        public IActionResult CreateUser([FromBody] UserDTO userCreateDTO)
+        {
+            if (userCreateDTO == null)
+            {
+                return BadRequest("User data is null.");
+            }
+
+            var user = new User
+            {
+                Id=userCreateDTO.Id,
+                Firstname=userCreateDTO.Firstname,
+                Lastname=userCreateDTO.Lastname,
+                Password = userCreateDTO.Password,
+                Profimage = userCreateDTO.Profimage,
+                Role = userCreateDTO.Role,
+                RegNum = userCreateDTO.RegNum,
+                Section = userCreateDTO.Section,
+                Semester = userCreateDTO.Semester,
+                Email = userCreateDTO.Email,
+                Phonenum = userCreateDTO.Phonenum,
+              
+
+            };
+
+        
+            _context.Users.Add(user);
+            _context.SaveChanges();
+
+          
+            var userDTO = new UserDTO
+            {   Firstname=user.Firstname, 
+                Lastname=user.Lastname,
+                Password = user.Password,
+                Profimage = user.Profimage,
+                Role = user.Role,
+                RegNum = user.RegNum,
+                Section = user.Section,
+                Semester = user.Semester,
+                Email = user.Email,
+                Phonenum = user.Phonenum,
+              
+            };
+
             return CreatedAtAction(nameof(GetUserById), new { id = user.Id }, userDTO);
         }
 
         // GET: api/User
-        [HttpGet]
+        [HttpGet("GetAllUsers")]
         public IActionResult GetAllUsers()
         {
             var users = _context.Users.ToList();
@@ -74,23 +116,24 @@ namespace Api_ProgrmmingCommunity.Controllers
             // Map the User entities to UserDTOs
             var userDTOs = users.Select(user => new UserDTO
             {
-                Id=user.Id,
+                Id = user.Id,
+                Firstname=user.Firstname,
+                Lastname=user.Lastname,
                 Password = user.Password,
                 Profimage = user.Profimage,
                 Role = user.Role,
-               
                 RegNum = user.RegNum,
                 Section = user.Section,
                 Semester = user.Semester,
                 Email = user.Email,
-                Phonenum = user.Phonenum
+                Phonenum = user.Phonenum,
+             
             }).ToList();
 
             return Ok(userDTOs); // Return a 200 OK response with the list of users
         }
 
-        // GET: api/User/{id}
-        [HttpGet("{id}")]
+        [HttpGet("GetUserById/{id}")]
         public IActionResult GetUserById(int id)
         {
             var user = _context.Users.FirstOrDefault(u => u.Id == id);
@@ -100,26 +143,29 @@ namespace Api_ProgrmmingCommunity.Controllers
                 return NotFound($"User with ID {id} not found.");
             }
 
-            // Map the User entity to a UserDTO for returning the data
+        
             var userDTO = new UserDTO
             {
+                Id = user.Id,
+                Firstname = user.Firstname,
+                Lastname = user.Lastname,
                 Password = user.Password,
                 Profimage = user.Profimage,
                 Role = user.Role,
-              
                 RegNum = user.RegNum,
                 Section = user.Section,
                 Semester = user.Semester,
                 Email = user.Email,
-                Phonenum = user.Phonenum
+                Phonenum = user.Phonenum,
+               
             };
 
             return Ok(userDTO);
         }
 
-        // PUT: api/User/{id}
-        [HttpPut("{id}")]
-        public IActionResult UpdateUser(int id, [FromBody] UserDTO userDTO)
+   
+        [HttpPut("UpdateUser/{id}")]
+        public IActionResult UpdateUser(int id, [FromForm] UserDTO userDTO)
         {
             if (userDTO == null)
             {
@@ -132,11 +178,12 @@ namespace Api_ProgrmmingCommunity.Controllers
                 return NotFound($"User with ID {id} not found.");
             }
 
-            // Update user properties
+            user.Firstname = userDTO.Firstname;
+            user.Lastname = userDTO.Lastname;
             user.Password = userDTO.Password;
             user.Profimage = userDTO.Profimage;
             user.Role = userDTO.Role;
-           
+
             user.RegNum = userDTO.RegNum;
             user.Section = userDTO.Section;
             user.Semester = userDTO.Semester;
@@ -146,13 +193,12 @@ namespace Api_ProgrmmingCommunity.Controllers
             _context.Users.Update(user);
             _context.SaveChanges();
 
-            // Return a message with the updated user details
             var updatedUserDTO = new UserDTO
             {
                 Password = user.Password,
                 Profimage = user.Profimage,
                 Role = user.Role,
-            
+
                 RegNum = user.RegNum,
                 Section = user.Section,
                 Semester = user.Semester,
@@ -164,7 +210,7 @@ namespace Api_ProgrmmingCommunity.Controllers
         }
 
         // DELETE: api/User/{id}
-        [HttpDelete("{id}")]
+        [HttpDelete("(\"DeleteUser\"){id}")]
         public IActionResult DeleteUser(int id)
         {
             var user = _context.Users.FirstOrDefault(u => u.Id == id);

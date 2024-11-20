@@ -7,7 +7,7 @@ public partial class Question
 {
     public int Id { get; set; }
 
-    public int? SubjectCode { get; set; }
+    public string? SubjectCode { get; set; }
 
     public int? TopicId { get; set; }
 
@@ -18,6 +18,8 @@ public partial class Question
     public string? Text { get; set; }
 
     public int? Type { get; set; }
+
+   
 
     public virtual ICollection<CompetitionRoundQuestion> CompetitionRoundQuestions { get; set; } = new List<CompetitionRoundQuestion>();
 

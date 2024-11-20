@@ -11,6 +11,8 @@ public partial class CompetitionMember
 
     public int? UserId { get; set; }
 
+   
+
     public virtual Competition? Competition { get; set; }
 
     public virtual User? User { get; set; }

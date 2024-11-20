@@ -23,6 +23,10 @@ public partial class User
 
     public string? Phonenum { get; set; }
 
+    public string? Firstname { get; set; }
+
+    public string? Lastname { get; set; }
+
     public virtual ICollection<CompetitionAttemptedQuestion> CompetitionAttemptedQuestions { get; set; } = new List<CompetitionAttemptedQuestion>();
 
     public virtual ICollection<CompetitionMember> CompetitionMembers { get; set; } = new List<CompetitionMember>();
@@ -33,7 +37,7 @@ public partial class User
 
     public virtual ICollection<Question> Questions { get; set; } = new List<Question>();
 
+    public virtual ICollection<StudentSubject> StudentSubjects { get; set; } = new List<StudentSubject>();
+
     public virtual ICollection<SubmittedTask> SubmittedTasks { get; set; } = new List<SubmittedTask>();
 }
-
-

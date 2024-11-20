@@ -19,6 +19,8 @@ public partial class SubmittedTask
 
     public int? Score { get; set; }
 
+   
+
     public virtual TaskQuestion? Taskquestion { get; set; }
 
     public virtual User? User { get; set; }

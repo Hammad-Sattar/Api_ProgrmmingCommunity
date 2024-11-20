@@ -11,6 +11,8 @@ public partial class ExpertTopic
 
     public int? TopicId { get; set; }
 
+   
+
     public virtual User? Expert { get; set; }
 
     public virtual Topic? Topic { get; set; }
