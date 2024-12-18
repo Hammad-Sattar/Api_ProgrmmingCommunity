@@ -37,6 +37,8 @@ public partial class User
 
     public virtual ICollection<Question> Questions { get; set; } = new List<Question>();
 
+    public virtual ICollection<RoundResult> RoundResults { get; set; } = new List<RoundResult>();
+
     public virtual ICollection<StudentSubject> StudentSubjects { get; set; } = new List<StudentSubject>();
 
     public virtual ICollection<SubmittedTask> SubmittedTasks { get; set; } = new List<SubmittedTask>();

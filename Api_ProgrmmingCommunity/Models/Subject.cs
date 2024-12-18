@@ -9,8 +9,6 @@ public partial class Subject
 
     public string? Title { get; set; }
 
-   
-
     public virtual ICollection<ExpertSubject> ExpertSubjects { get; set; } = new List<ExpertSubject>();
 
     public virtual ICollection<Question> Questions { get; set; } = new List<Question>();

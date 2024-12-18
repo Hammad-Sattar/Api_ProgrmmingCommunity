@@ -15,8 +15,6 @@ public partial class CompetitionRound
 
     public DateOnly? Date { get; set; }
 
-   
-
     public virtual Competition? Competition { get; set; }
 
     public virtual ICollection<CompetitionRoundQuestion> CompetitionRoundQuestions { get; set; } = new List<CompetitionRoundQuestion>();
@@ -24,4 +22,6 @@ public partial class CompetitionRound
     public virtual ICollection<RoundQualificationCriterion> RoundQualificationCriterionFromRounds { get; set; } = new List<RoundQualificationCriterion>();
 
     public virtual ICollection<RoundQualificationCriterion> RoundQualificationCriterionToRounds { get; set; } = new List<RoundQualificationCriterion>();
+
+    public virtual ICollection<RoundResult> RoundResults { get; set; } = new List<RoundResult>();
 }

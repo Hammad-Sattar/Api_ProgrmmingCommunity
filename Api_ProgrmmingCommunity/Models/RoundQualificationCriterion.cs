@@ -13,8 +13,6 @@ public partial class RoundQualificationCriterion
 
     public int? TopTeams { get; set; }
 
-   
-
     public virtual CompetitionRound? FromRound { get; set; }
 
     public virtual CompetitionRound? ToRound { get; set; }
