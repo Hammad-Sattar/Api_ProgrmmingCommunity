@@ -11,8 +11,6 @@ public partial class StudentSubject
 
     public string? SubjectCode { get; set; }
 
-   
-
     public virtual User? Student { get; set; }
 
     public virtual Subject? SubjectCodeNavigation { get; set; }

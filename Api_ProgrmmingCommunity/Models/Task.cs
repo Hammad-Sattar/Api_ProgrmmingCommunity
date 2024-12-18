@@ -15,7 +15,5 @@ public partial class Task
 
     public DateOnly? EndDate { get; set; }
 
-   
-
     public virtual ICollection<TaskQuestion> TaskQuestions { get; set; } = new List<TaskQuestion>();
 }
