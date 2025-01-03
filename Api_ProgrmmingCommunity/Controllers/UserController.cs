@@ -16,7 +16,7 @@ namespace Api_ProgrmmingCommunity.Controllers
             _context = context;
         }
         [HttpPost("login")]
-        public IActionResult Login([FromForm] LoginDTO loginDTO)
+        public IActionResult Login( LoginDTO loginDTO)
         {
             if (loginDTO == null || string.IsNullOrWhiteSpace(loginDTO.Email) || string.IsNullOrWhiteSpace(loginDTO.Password))
             {
@@ -165,7 +165,7 @@ namespace Api_ProgrmmingCommunity.Controllers
 
    
         [HttpPut("UpdateUser/{id}")]
-        public IActionResult UpdateUser(int id, [FromForm] UserDTO userDTO)
+        public IActionResult UpdateUser(int id,  UserDTO userDTO)
         {
             if (userDTO == null)
             {
