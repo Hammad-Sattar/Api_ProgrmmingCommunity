@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Api_ProgrmmingCommunity.Models;
+using Api_ProgrmmingCommunity.Dto;
 using System.Linq;
 
 namespace Api_ProgrmmingCommunity.Controllers
@@ -16,19 +17,26 @@ namespace Api_ProgrmmingCommunity.Controllers
             }
 
         [HttpPost("AddTopic")]
-        public IActionResult AddTopic([FromBody] Topic topic)
+        public IActionResult AddTopic([FromBody] TopicDTO topicDto)
             {
-            if (topic == null)
+            if (topicDto == null)
                 {
                 return BadRequest("Topic data is null.");
                 }
 
-            topic.IsDeleted = false;
+            var topic = new Topic
+                {
+                SubjectCode = topicDto.SubjectCode,
+                Title = topicDto.Title,
+                IsDeleted = false
+                };
 
             _context.Topics.Add(topic);
             _context.SaveChanges();
 
-            return CreatedAtAction(nameof(GetTopic), new { id = topic.Id }, topic);
+            topicDto.Id = topic.Id; // Set the Id from the database after insert
+
+            return CreatedAtAction(nameof(GetTopic), new { id = topic.Id }, topicDto);
             }
 
         [HttpGet("GetTopic")]
@@ -45,7 +53,15 @@ namespace Api_ProgrmmingCommunity.Controllers
                 return NotFound("Topic not found or is marked as deleted.");
                 }
 
-            return Ok(topic);
+            var topicDto = new TopicDTO
+                {
+                Id = topic.Id,
+                SubjectCode = topic.SubjectCode,
+                Title = topic.Title,
+                IsDeleted = topic.IsDeleted
+                };
+
+            return Ok(topicDto);
             }
 
         [HttpGet("GetAllTopics")]
@@ -55,7 +71,15 @@ namespace Api_ProgrmmingCommunity.Controllers
                 .Where(t => t.IsDeleted == false)
                 .ToList();
 
-            return Ok(topics);
+            var topicDtos = topics.Select(t => new TopicDTO
+                {
+                Id = t.Id,
+                SubjectCode = t.SubjectCode,
+                Title = t.Title,
+                IsDeleted = t.IsDeleted
+                }).ToList();
+
+            return Ok(topicDtos);
             }
 
         [HttpDelete("DeleteTopic")]
