@@ -2,7 +2,7 @@
 {
     public  class QuestionDTO
     {
-        public int? Id { get; set; }
+        public int Id { get; set; }
 
         public string? SubjectCode { get; set; }
 
@@ -15,5 +15,7 @@
         public string? Text { get; set; }
 
         public int? Type { get; set; }
-    }
+
+        public bool? IsDeleted { get; set; }
+        }
 }

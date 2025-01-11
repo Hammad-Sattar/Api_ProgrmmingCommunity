@@ -11,6 +11,8 @@ public partial class TaskQuestion
 
     public int? QuestionId { get; set; }
 
+    public bool? IsDeleted { get; set; }
+
     public virtual Question? Question { get; set; }
 
     public virtual ICollection<SubmittedTask> SubmittedTasks { get; set; } = new List<SubmittedTask>();

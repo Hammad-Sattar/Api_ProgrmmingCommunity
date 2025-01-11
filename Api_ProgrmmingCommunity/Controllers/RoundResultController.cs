@@ -1,124 +1,116 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
-using System.Linq;
-using Microsoft.EntityFrameworkCore;
-using Api_ProgrmmingCommunity.Models;
+﻿using Api_ProgrmmingCommunity.Models;
 using Api_ProgrmmingCommunity.Dto;
+using Microsoft.AspNetCore.Mvc;
+using System.Linq;
 
 namespace Api_ProgrmmingCommunity.Controllers
-{
+    {
     [Route("api/[controller]")]
     [ApiController]
-    public class RoundResultsController : ControllerBase
-    {
+    public class RoundResultController : ControllerBase
+        {
         private readonly ProgrammingCommunityContext _context;
 
-        public RoundResultsController(ProgrammingCommunityContext context)
-        {
+        public RoundResultController(ProgrammingCommunityContext context)
+            {
             _context = context;
-        }
+            }
 
-       
-        [HttpGet]
-        public async Task<IActionResult> GetRoundResults()
-        {
-            var roundResults = await _context.RoundResults
-                .Include(r => r.CompetitionRound)
-                .Include(r => r.User)
-                .ToListAsync();
-
-            if (!roundResults.Any())
-                return NotFound("No round results found.");
-
-            var roundResultsDto = roundResults.Select(r => new RoundResultDTO
+        [HttpPost("CreateRoundResult")]
+        public IActionResult CreateRoundResult([FromBody] RoundResultDTO roundResultDto)
             {
-                Id = r.Id,
-                CompetitionRoundId = r.CompetitionRoundId,
-                UserId = r.UserId,
-                Score = r.Score,
-                IsQualified = r.IsQualified ?? false,
-                CompetitionId = r.CompetitionId
-            }).ToList();
-
-            return Ok(new { Message = "Round results fetched successfully.", Data = roundResultsDto });
-        }
-
-       
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetRoundResult(int id)
-        {
-            var roundResult = await _context.RoundResults
-                .Include(r => r.CompetitionRound)
-                .Include(r => r.User)
-                .FirstOrDefaultAsync(r => r.Id == id);
-
-            if (roundResult == null)
-                return NotFound("Round result not found.");
-
-            var roundResultDto = new RoundResultDTO
-            {
-                Id = roundResult.Id,
-                CompetitionRoundId = roundResult.CompetitionRoundId,
-                UserId = roundResult.UserId,
-                Score = roundResult.Score,
-                IsQualified = roundResult.IsQualified ?? false,
-                CompetitionId = roundResult.CompetitionId
-            };
-
-            return Ok(new { Message = "Round result fetched successfully.", Data = roundResultDto });
-        }
-
-       
-        [HttpPost]
-        public async Task<IActionResult> PostRoundResult(RoundResultDTO roundResultDTO)
-        {
-            if (roundResultDTO == null)
-                return BadRequest("RoundResult data is required.");
+            if (roundResultDto == null)
+                {
+                return BadRequest("Round result data is null.");
+                }
 
             var roundResult = new RoundResult
-            {
-                CompetitionRoundId = roundResultDTO.CompetitionRoundId,
-                UserId = roundResultDTO.UserId,
-                Score = roundResultDTO.Score,
-                IsQualified = roundResultDTO.IsQualified,
-                CompetitionId = roundResultDTO.CompetitionId
-            };
+                {
+                CompetitionRoundId = roundResultDto.CompetitionRoundId,
+                TeamId = roundResultDto.TeamId,
+                Score = roundResultDto.Score,
+                CompetitionId = roundResultDto.CompetitionId,
+                IsQualified = roundResultDto.IsQualified,
+                IsDeleted = roundResultDto.IsDeleted
+                };
 
             _context.RoundResults.Add(roundResult);
-            await _context.SaveChangesAsync();
+            _context.SaveChanges();
 
-            return CreatedAtAction(nameof(GetRoundResult), new { id = roundResult.Id }, new { Message = "Round result posted successfully.", Data = roundResultDTO });
-        }
+            return CreatedAtAction(nameof(GetRoundResult), new { id = roundResult.Id }, roundResult);
+            }
 
-        
-        [HttpGet("GetByRoundAndCompetition")]
-        public async Task<IActionResult> GetRoundResultsByRoundAndCompetition(int roundId, int competitionId)
-        {
-            var roundResults = await _context.RoundResults
-                .Include(r => r.CompetitionRound)
-                .Include(r => r.User)
-                .Where(r => r.CompetitionRoundId == roundId && r.CompetitionId == competitionId)
-                .ToListAsync();
-
-            if (!roundResults.Any())
-                return NotFound("No round results found for the specified round and competition.");
-
-            var roundResultsDto = roundResults.Select(r => new RoundResultDTO
+        [HttpGet("GetRoundResult")]
+        public IActionResult GetRoundResult([FromQuery] int? id, [FromQuery] int? competitionRoundId, [FromQuery] int? teamId, [FromQuery] int? competitionId)
             {
-                Id = r.Id,
-                CompetitionRoundId = r.CompetitionRoundId,
-                UserId = r.UserId,
-                Score = r.Score,
-                IsQualified = r.IsQualified ?? false,
-                CompetitionId = r.CompetitionId
-            }).ToList();
+            var roundResult = _context.RoundResults
+                .FirstOrDefault(rr =>
+                    (id != null && rr.Id == id) ||
+                    (competitionRoundId != null && rr.CompetitionRoundId == competitionRoundId) ||
+                    (teamId != null && rr.TeamId == teamId) ||
+                    (competitionId != null && rr.CompetitionId == competitionId));
 
-            return Ok(new
+            if (roundResult == null)
+                {
+                return NotFound("Round result not found.");
+                }
+
+            var roundResultDto = new RoundResultDTO
+                {
+                Id = roundResult.Id,
+                CompetitionRoundId = roundResult.CompetitionRoundId,
+                TeamId = roundResult.TeamId,
+                Score = roundResult.Score,
+                CompetitionId = roundResult.CompetitionId,
+                IsQualified = roundResult.IsQualified,
+                IsDeleted = roundResult.IsDeleted
+                };
+
+            return Ok(roundResultDto);
+            }
+
+        [HttpPut("UpdateRoundResult")]
+        public IActionResult UpdateRoundResult(int id, [FromBody] RoundResultDTO roundResultDto)
             {
-                Message = "Round results fetched successfully.",
-                Data = roundResultsDto
-            });
-        }
+            var roundResult = _context.RoundResults.FirstOrDefault(rr => rr.Id == id);
 
+            if (roundResult == null)
+                {
+                return NotFound("Round result not found.");
+                }
+
+            roundResult.CompetitionRoundId = roundResultDto.CompetitionRoundId;
+            roundResult.TeamId = roundResultDto.TeamId;
+            roundResult.Score = roundResultDto.Score;
+            roundResult.CompetitionId = roundResultDto.CompetitionId;
+            roundResult.IsQualified = roundResultDto.IsQualified;
+            roundResult.IsDeleted = roundResultDto.IsDeleted;
+
+            _context.RoundResults.Update(roundResult);
+            _context.SaveChanges();
+
+            return NoContent();
+            }
+
+        [HttpDelete("DeleteRoundResult")]
+        public IActionResult DeleteRoundResult([FromQuery] int? id, [FromQuery] int? competitionRoundId, [FromQuery] int? teamId, [FromQuery] int? competitionId)
+            {
+            var roundResult = _context.RoundResults
+                .FirstOrDefault(rr =>
+                    (id != null && rr.Id == id) ||
+                    (competitionRoundId != null && rr.CompetitionRoundId == competitionRoundId) ||
+                    (teamId != null && rr.TeamId == teamId) ||
+                    (competitionId != null && rr.CompetitionId == competitionId));
+
+            if (roundResult == null)
+                {
+                return NotFound("Round result not found.");
+                }
+
+            _context.RoundResults.Remove(roundResult);
+            _context.SaveChanges();
+
+            return Ok("Round result deleted.");
+            }
+        }
     }
-}

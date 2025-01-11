@@ -9,7 +9,7 @@ public partial class RoundResult
 
     public int? CompetitionRoundId { get; set; }
 
-    public int? UserId { get; set; }
+    public int? TeamId { get; set; }
 
     public int? Score { get; set; }
 
@@ -17,7 +17,11 @@ public partial class RoundResult
 
     public bool? IsQualified { get; set; }
 
+    public bool? IsDeleted { get; set; }
+
+    public virtual Competition? Competition { get; set; }
+
     public virtual CompetitionRound? CompetitionRound { get; set; }
 
-    public virtual User? User { get; set; }
+    public virtual Team? Team { get; set; }
 }

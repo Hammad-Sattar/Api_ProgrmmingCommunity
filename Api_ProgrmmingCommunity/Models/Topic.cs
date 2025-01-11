@@ -11,6 +11,8 @@ public partial class Topic
 
     public string? Title { get; set; }
 
+    public bool? IsDeleted { get; set; }
+
     public virtual ICollection<ExpertTopic> ExpertTopics { get; set; } = new List<ExpertTopic>();
 
     public virtual ICollection<Question> Questions { get; set; } = new List<Question>();

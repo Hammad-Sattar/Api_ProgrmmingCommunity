@@ -27,9 +27,11 @@ public partial class User
 
     public string? Lastname { get; set; }
 
-    public virtual ICollection<CompetitionAttemptedQuestion> CompetitionAttemptedQuestions { get; set; } = new List<CompetitionAttemptedQuestion>();
+    public bool? IsDeleted { get; set; }
 
-    public virtual ICollection<CompetitionMember> CompetitionMembers { get; set; } = new List<CompetitionMember>();
+    public string? Empid { get; set; }
+
+    public virtual ICollection<Competition> Competitions { get; set; } = new List<Competition>();
 
     public virtual ICollection<ExpertSubject> ExpertSubjects { get; set; } = new List<ExpertSubject>();
 
@@ -37,9 +39,13 @@ public partial class User
 
     public virtual ICollection<Question> Questions { get; set; } = new List<Question>();
 
-    public virtual ICollection<RoundResult> RoundResults { get; set; } = new List<RoundResult>();
-
     public virtual ICollection<StudentSubject> StudentSubjects { get; set; } = new List<StudentSubject>();
 
     public virtual ICollection<SubmittedTask> SubmittedTasks { get; set; } = new List<SubmittedTask>();
+
+    public virtual ICollection<Team> TeamMember1s { get; set; } = new List<Team>();
+
+    public virtual ICollection<Team> TeamMember2s { get; set; } = new List<Team>();
+
+    public virtual ICollection<Team> TeamMember3s { get; set; } = new List<Team>();
 }

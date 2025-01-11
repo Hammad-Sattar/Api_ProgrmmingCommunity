@@ -5,7 +5,7 @@ namespace Api_ProgrmmingCommunity.Models;
 
 public partial class Competition
 {
-    public int Id { get; set; }
+    public int CompetitionId { get; set; }
 
     public string? Title { get; set; }
 
@@ -15,7 +15,17 @@ public partial class Competition
 
     public int? MaxLevel { get; set; }
 
-    public virtual ICollection<CompetitionMember> CompetitionMembers { get; set; } = new List<CompetitionMember>();
+    public string? Password { get; set; }
+
+    public int? UserId { get; set; }
+
+    public bool? IsDeleted { get; set; }
 
     public virtual ICollection<CompetitionRound> CompetitionRounds { get; set; } = new List<CompetitionRound>();
+
+    public virtual ICollection<CompetitionTeam> CompetitionTeams { get; set; } = new List<CompetitionTeam>();
+
+    public virtual ICollection<RoundResult> RoundResults { get; set; } = new List<RoundResult>();
+
+    public virtual User? User { get; set; }
 }

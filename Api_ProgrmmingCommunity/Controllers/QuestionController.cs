@@ -1,108 +1,114 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Api_ProgrmmingCommunity.Models;
 using System.Linq;
 using Api_ProgrmmingCommunity.Dto;
 
 namespace Api_ProgrmmingCommunity.Controllers
-{
+    {
     [Route("api/[controller]")]
     [ApiController]
     public class QuestionController : ControllerBase
-    {
+        {
         private readonly ProgrammingCommunityContext _context;
 
         public QuestionController(ProgrammingCommunityContext context)
-        {
-            _context = context;
-        }
-
-        // DTO class
-
-        [HttpGet("GetAllQuestions")]
-        public IActionResult GetAllQuestions()
-        {
-            var questions = _context.Questions
-                .Select(q => new QuestionDTO
-                {
-                    Id = q.Id,
-                    SubjectCode = q.SubjectCode,
-                    TopicId = q.TopicId,
-                    UserId = q.UserId,
-                    Difficulty = q.Difficulty,
-                    Text = q.Text,
-                    Type = q.Type
-                }).ToList();
-
-            if (!questions.Any())
             {
-                return NotFound("No questions found.");
+            _context = context;
             }
-
-            return Ok(questions);
-        }
 
         [HttpPost("AddQuestion")]
-        public IActionResult PostQuestion( QuestionDTO questionDTO)
-        {
-            if (questionDTO == null)
+        public IActionResult AddQuestion([FromBody] QuestionDTO questionDto)
             {
+            if (questionDto == null)
+                {
                 return BadRequest("Question data is null.");
-            }
+                }
 
-            
-            if (questionDTO.TopicId.HasValue && !_context.Topics.Any(t => t.Id == questionDTO.TopicId))
-            {
-                return BadRequest($"Topic with ID {questionDTO.TopicId} does not exist.");
-            }
-
-            if (questionDTO.UserId.HasValue && !_context.Users.Any(u => u.Id == questionDTO.UserId))
-            {
-                return BadRequest($"User with ID {questionDTO.UserId} does not exist.");
-            }
-
-           
             var question = new Question
-            {
-                SubjectCode = questionDTO.SubjectCode,
-                TopicId = questionDTO.TopicId,
-                UserId = questionDTO.UserId,
-                Difficulty = questionDTO.Difficulty,
-                Text = questionDTO.Text,
-                Type = questionDTO.Type
-            };
+                {
+                SubjectCode = questionDto.SubjectCode,
+                TopicId = questionDto.TopicId,
+                UserId = questionDto.UserId,
+                Difficulty = questionDto.Difficulty,
+                Text = questionDto.Text,
+                Type = questionDto.Type,
+                IsDeleted = false
+                };
 
-           
             _context.Questions.Add(question);
             _context.SaveChanges();
 
-           
-            return CreatedAtAction(nameof(GetQuestionById), new { id = question.Id }, question);
-        }
+            return CreatedAtAction(nameof(GetQuestion), new { id = question.Id }, question);
+            }
 
+        [HttpGet("GetQuestion")]
+        public IActionResult GetQuestion([FromQuery] int? id, [FromQuery] string? subjectCode, [FromQuery] int? topicId, [FromQuery] int? userId)
+            {
+            var question = _context.Questions.FirstOrDefault(q =>
+                q.IsDeleted == false &&
+                ((id != null && q.Id == id) ||
+                 (subjectCode != null && q.SubjectCode == subjectCode) ||
+                 (topicId != null && q.TopicId == topicId) ||
+                 (userId != null && q.UserId == userId)));
 
-        [HttpGet("GetQuestionById/{id}")]
-        public IActionResult GetQuestionById( int id)
-        {
-            var question = _context.Questions
-                .Where(q => q.Id == id)
-                .Select(q => new QuestionDTO
+            if (question == null)
                 {
+                return NotFound("Question not found or is marked as deleted.");
+                }
+
+            return Ok(new QuestionDTO
+                {
+                Id = question.Id,
+                SubjectCode = question.SubjectCode,
+                TopicId = question.TopicId,
+                UserId = question.UserId,
+                Difficulty = question.Difficulty,
+                Text = question.Text,
+                Type = question.Type,
+                IsDeleted = question.IsDeleted
+                });
+            }
+
+        [HttpGet("GetAllQuestions")]
+        public IActionResult GetAllQuestions()
+            {
+            var questions = _context.Questions
+                .Where(q => q.IsDeleted == false)
+                .Select(q => new QuestionDTO
+                    {
                     Id = q.Id,
                     SubjectCode = q.SubjectCode,
                     TopicId = q.TopicId,
                     UserId = q.UserId,
                     Difficulty = q.Difficulty,
                     Text = q.Text,
-                    Type = q.Type
-                }).FirstOrDefault();
+                    Type = q.Type,
+                    IsDeleted = q.IsDeleted
+                    })
+                .ToList();
 
-            if (question == null)
-            {
-                return NotFound($"Question with ID {id} not found.");
+            return Ok(questions);
             }
 
-            return Ok(question);
+        [HttpDelete("DeleteQuestion")]
+        public IActionResult DeleteQuestion([FromQuery] int? id, [FromQuery] string? subjectCode, [FromQuery] int? topicId, [FromQuery] int? userId)
+            {
+            var question = _context.Questions.FirstOrDefault(q =>
+                (id != null && q.Id == id) ||
+                (subjectCode != null && q.SubjectCode == subjectCode) ||
+                (topicId != null && q.TopicId == topicId) ||
+                (userId != null && q.UserId == userId));
+
+            if (question == null)
+                {
+                return NotFound("Question not found.");
+                }
+
+            question.IsDeleted = true;
+            _context.Questions.Update(question);
+            _context.SaveChanges();
+
+            return Ok("Question marked as deleted.");
+            }
         }
     }
-}
