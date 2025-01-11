@@ -18,7 +18,7 @@ namespace Api_ProgrmmingCommunity.Controllers
 
         // POST: Add a new competition
         [HttpPost("MakeCompetition")]
-        public IActionResult AddCompetition([FromForm]CompetitionDTO competitionDTO)
+        public IActionResult AddCompetition(CompetitionDTO competitionDTO)
         {
             if (competitionDTO == null)
             {
@@ -68,7 +68,7 @@ namespace Api_ProgrmmingCommunity.Controllers
 
        
         [HttpGet("GetCompetitionById/{id}")]
-        public IActionResult GetCompetitionById([FromForm] int id)
+        public IActionResult GetCompetitionById( int id)
         {
             var competition = _context.Competitions
                 .Where(c => c.Id == id)

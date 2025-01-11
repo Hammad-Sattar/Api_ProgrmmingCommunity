@@ -18,7 +18,7 @@ namespace Api_ProgrmmingCommunity.Controllers
 
        
         [HttpPost("AddCompetitionMember")]
-        public IActionResult AddCompetitionMember([FromForm] CompetitionMemberDTO competitionMemberDTO)
+        public IActionResult AddCompetitionMember( CompetitionMemberDTO competitionMemberDTO)
         {
             if (competitionMemberDTO == null)
             {
@@ -30,7 +30,7 @@ namespace Api_ProgrmmingCommunity.Controllers
             {
                 CompetitionId = competitionMemberDTO.CompetitionId,
                 UserId = competitionMemberDTO.UserId,
-               
+              
             };
 
     
@@ -67,7 +67,7 @@ namespace Api_ProgrmmingCommunity.Controllers
 
  
         [HttpGet("GetCompetitionMemberById/{id}")]
-        public IActionResult GetCompetitionMemberById([FromForm] int id)
+        public IActionResult GetCompetitionMemberById( int id)
         {
             var competitionMember = _context.CompetitionMembers
                 .Where(cm => cm.Id == id)

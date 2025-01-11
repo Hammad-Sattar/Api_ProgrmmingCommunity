@@ -50,7 +50,7 @@ public class SubjectController : ControllerBase
 
     // POST: api/Subject
     [HttpPost]
-    public IActionResult CreateSubject([FromForm] SubjectDTO subjectDTO)
+    public IActionResult CreateSubject( SubjectDTO subjectDTO)
     {
         if (subjectDTO == null)
         {
@@ -71,7 +71,7 @@ public class SubjectController : ControllerBase
 
     // PUT: api/Subject/{Code}
     [HttpPut("{Code}")]
-    public IActionResult UpdateSubject(string Code, [FromForm] SubjectDTO subjectDTO)
+    public IActionResult UpdateSubject(string Code,  SubjectDTO subjectDTO)
     {
         if (subjectDTO == null)
         {

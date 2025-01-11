@@ -43,14 +43,14 @@ namespace Api_ProgrmmingCommunity.Controllers
         }
 
         [HttpPost("AddQuestion")]
-        public IActionResult PostQuestion([FromForm] QuestionDTO questionDTO)
+        public IActionResult PostQuestion( QuestionDTO questionDTO)
         {
             if (questionDTO == null)
             {
                 return BadRequest("Question data is null.");
             }
 
-            // Validate related foreign keys
+            
             if (questionDTO.TopicId.HasValue && !_context.Topics.Any(t => t.Id == questionDTO.TopicId))
             {
                 return BadRequest($"Topic with ID {questionDTO.TopicId} does not exist.");
@@ -82,7 +82,7 @@ namespace Api_ProgrmmingCommunity.Controllers
 
 
         [HttpGet("GetQuestionById/{id}")]
-        public IActionResult GetQuestionById([FromForm] int id)
+        public IActionResult GetQuestionById( int id)
         {
             var question = _context.Questions
                 .Where(q => q.Id == id)
