@@ -63,6 +63,45 @@ namespace MapProjectApi.Controllers
 
             return Ok(questionDtos);
         }
+        [HttpPost("AddQuestionWithOptions")]
+        public async Task<IActionResult> AddQuestionWithOptions([FromBody] QuestionDtoListVM model)
+            {
+            if (model == null)
+                {
+                return BadRequest("Invalid data.");
+                }
+
+            // Create and save the question
+            var question = new Question
+                {
+                SubjectCode = model.SubjectCode,
+                TopicId = model.TopicId,
+                UserId = model.UserId,
+                Difficulty = model.Difficulty,
+                Text = model.Text,
+                Type = model.Type
+                };
+
+            _context.Questions.Add(question);
+            await _context.SaveChangesAsync();  // Save to generate the Question ID
+
+            // If Type is 2, save the options
+            if (model.Type == 2 && model.Options != null && model.Options.Any())
+                {
+                var options = model.Options.Select(opt => new QuestionOption
+                    {
+                    QuestionId = question.Id,  // Assign the generated QuestionId
+                    Option = opt.Option,
+                    IsCorrect = opt.IsCorrect
+                    }).ToList();
+
+                _context.QuestionOptions.AddRange(options);
+                await _context.SaveChangesAsync();
+                }
+
+            return Ok(new { message = "Question added successfully", QuestionId = question.Id });
+            }
+
 
         [HttpGet("GetAllQuestions")]
         public async Task<ActionResult<IEnumerable<QuestionDto>>> GetAllQuestions()
