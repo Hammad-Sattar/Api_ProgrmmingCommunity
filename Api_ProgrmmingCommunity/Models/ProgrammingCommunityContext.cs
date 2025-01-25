@@ -14,7 +14,6 @@ public partial class ProgrammingCommunityContext : DbContext
         : base(options)
         {
         }
-
     public virtual DbSet<Competition> Competitions { get; set; }
 
     public virtual DbSet<CompetitionAttemptedQuestion> CompetitionAttemptedQuestions { get; set; }
@@ -53,9 +52,11 @@ public partial class ProgrammingCommunityContext : DbContext
 
     public virtual DbSet<User> Users { get; set; }
 
-//    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-//#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
-//        => optionsBuilder.UseSqlServer("Server=sql.bsite.net\\MSSQL2016;Database=haadi123_;User Id=haadi123_;Password=db123;TrustServerCertificate=True;");
+    public virtual DbSet<WinnerBoard> WinnerBoards { get; set; }
+
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
+        => optionsBuilder.UseSqlServer("Server=sql.bsite.net\\MSSQL2016;Database=haadi123_;User Id=haadi123_;Password=db123;TrustServerCertificate=True;");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -222,6 +223,7 @@ public partial class ProgrammingCommunityContext : DbContext
             entity.Property(e => e.IsDeleted)
                 .HasDefaultValue(false)
                 .HasColumnName("isDeleted");
+            entity.Property(e => e.Repeated).HasColumnName("repeated");
             entity.Property(e => e.SubjectCode)
                 .HasMaxLength(255)
                 .IsUnicode(false)
@@ -232,6 +234,7 @@ public partial class ProgrammingCommunityContext : DbContext
             entity.Property(e => e.TopicId).HasColumnName("topic_id");
             entity.Property(e => e.Type).HasColumnName("type");
             entity.Property(e => e.UserId).HasColumnName("user_id");
+            entity.Property(e => e.YearlyRepeated).HasColumnName("yearly_repeated");
 
             entity.HasOne(d => d.SubjectCodeNavigation).WithMany(p => p.Questions)
                 .HasForeignKey(d => d.SubjectCode)
@@ -493,10 +496,6 @@ public partial class ProgrammingCommunityContext : DbContext
                 .HasMaxLength(20)
                 .IsUnicode(false)
                 .HasColumnName("phonenum");
-            entity.Property(e => e.Profimage)
-                .HasMaxLength(255)
-                .IsUnicode(false)
-                .HasColumnName("profimage");
             entity.Property(e => e.RegNum)
                 .HasMaxLength(255)
                 .IsUnicode(false)
@@ -507,6 +506,26 @@ public partial class ProgrammingCommunityContext : DbContext
                 .IsUnicode(false)
                 .HasColumnName("section");
             entity.Property(e => e.Semester).HasColumnName("semester");
+        });
+
+        modelBuilder.Entity<WinnerBoard>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__WinnerBo__3213E83FA8401300");
+
+            entity.ToTable("WinnerBoard");
+
+            entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.CompetitionId).HasColumnName("competition_id");
+            entity.Property(e => e.Score).HasColumnName("score");
+            entity.Property(e => e.TeamId).HasColumnName("team_id");
+
+            entity.HasOne(d => d.Competition).WithMany(p => p.WinnerBoards)
+                .HasForeignKey(d => d.CompetitionId)
+                .HasConstraintName("FK__WinnerBoa__compe__3429BB53");
+
+            entity.HasOne(d => d.Team).WithMany(p => p.WinnerBoards)
+                .HasForeignKey(d => d.TeamId)
+                .HasConstraintName("FK__WinnerBoa__team___351DDF8C");
         });
 
         OnModelCreatingPartial(modelBuilder);

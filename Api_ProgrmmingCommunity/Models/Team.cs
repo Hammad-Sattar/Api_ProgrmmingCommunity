@@ -28,4 +28,6 @@ public partial class Team
     public virtual User? Member3 { get; set; }
 
     public virtual ICollection<RoundResult> RoundResults { get; set; } = new List<RoundResult>();
+
+    public virtual ICollection<WinnerBoard> WinnerBoards { get; set; } = new List<WinnerBoard>();
 }

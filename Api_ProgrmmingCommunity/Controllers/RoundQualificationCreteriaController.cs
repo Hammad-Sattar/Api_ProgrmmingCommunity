@@ -29,7 +29,7 @@ namespace Api_ProgrmmingCommunity.Controllers
                 FromRoundId = roundQualificationCreteriaDto.FromRoundId,
                 ToRoundId = roundQualificationCreteriaDto.ToRoundId,
                 TopTeams = roundQualificationCreteriaDto.TopTeams,
-                IsDeleted = roundQualificationCreteriaDto.IsDeleted
+            
                 };
             if(roundQualificationCreteria!=null)
 
@@ -59,7 +59,7 @@ namespace Api_ProgrmmingCommunity.Controllers
                 FromRoundId = roundQualificationCreteria.FromRoundId,
                 ToRoundId = roundQualificationCreteria.ToRoundId,
                 TopTeams = roundQualificationCreteria.TopTeams,
-                IsDeleted = roundQualificationCreteria.IsDeleted
+              
                 };
 
             return Ok(roundQualificationCreteriaDto);
@@ -78,7 +78,7 @@ namespace Api_ProgrmmingCommunity.Controllers
             roundQualificationCreteria.FromRoundId = roundQualificationCreteriaDto.FromRoundId;
             roundQualificationCreteria.ToRoundId = roundQualificationCreteriaDto.ToRoundId;
             roundQualificationCreteria.TopTeams = roundQualificationCreteriaDto.TopTeams;
-            roundQualificationCreteria.IsDeleted = roundQualificationCreteriaDto.IsDeleted;
+          
 
             _context.RoundQualificationCriteria.Update(roundQualificationCreteria);
             _context.SaveChanges();

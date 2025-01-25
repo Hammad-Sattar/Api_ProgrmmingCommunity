@@ -28,7 +28,7 @@ namespace Api_ProgrmmingCommunity.Controllers
                 {
                 TaskId = taskQuestionDto.TaskId,
                 QuestionId = taskQuestionDto.QuestionId,
-                IsDeleted = taskQuestionDto.IsDeleted
+               
                 };
 
             _context.TaskQuestions.Add(taskQuestion);
@@ -56,7 +56,7 @@ namespace Api_ProgrmmingCommunity.Controllers
                 Id = taskQuestion.Id,
                 TaskId = taskQuestion.TaskId,
                 QuestionId = taskQuestion.QuestionId,
-                IsDeleted = taskQuestion.IsDeleted
+               
                 };
 
             return Ok(taskQuestionDto);
@@ -74,7 +74,7 @@ namespace Api_ProgrmmingCommunity.Controllers
 
             taskQuestion.TaskId = taskQuestionDto.TaskId;
             taskQuestion.QuestionId = taskQuestionDto.QuestionId;
-            taskQuestion.IsDeleted = taskQuestionDto.IsDeleted;
+           
 
             _context.TaskQuestions.Update(taskQuestion);
             _context.SaveChanges();

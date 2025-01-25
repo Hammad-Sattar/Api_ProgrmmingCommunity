@@ -28,4 +28,6 @@ public partial class Competition
     public virtual ICollection<RoundResult> RoundResults { get; set; } = new List<RoundResult>();
 
     public virtual User? User { get; set; }
+
+    public virtual ICollection<WinnerBoard> WinnerBoards { get; set; } = new List<WinnerBoard>();
 }

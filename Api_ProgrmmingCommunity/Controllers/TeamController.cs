@@ -56,7 +56,7 @@ namespace Api_ProgrmmingCommunity.Controllers
                 Member1Id = team.Member1Id,
                 Member2Id = team.Member2Id,
                 Member3Id = team.Member3Id,
-                IsDeleted = team.IsDeleted
+               
                 });
             }
 
@@ -72,7 +72,7 @@ namespace Api_ProgrmmingCommunity.Controllers
                     Member1Id = t.Member1Id,
                     Member2Id = t.Member2Id,
                     Member3Id = t.Member3Id,
-                    IsDeleted = t.IsDeleted
+                   
                     })
                 .ToList();
 

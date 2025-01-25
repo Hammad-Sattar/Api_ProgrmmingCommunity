@@ -9,8 +9,6 @@ public partial class User
 
     public string? Password { get; set; }
 
-    public string? Profimage { get; set; }
-
     public int? Role { get; set; }
 
     public string? RegNum { get; set; }

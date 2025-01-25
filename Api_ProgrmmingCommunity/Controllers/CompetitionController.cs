@@ -33,7 +33,7 @@ namespace Api_ProgrmmingCommunity.Controllers
                 MaxLevel = competitionDto.MaxLevel,
                 Password = competitionDto.Password,
                 UserId = competitionDto.UserId,
-                IsDeleted = false
+              
                 };
 
             _context.Competitions.Add(competition);
@@ -62,7 +62,7 @@ namespace Api_ProgrmmingCommunity.Controllers
                 MaxLevel = competition.MaxLevel,
                 Password = competition.Password,
                 UserId = competition.UserId,
-                IsDeleted = competition.IsDeleted
+            
                 });
             }
 
@@ -80,7 +80,7 @@ namespace Api_ProgrmmingCommunity.Controllers
                     MaxLevel = c.MaxLevel,
                     Password = c.Password,
                     UserId = c.UserId,
-                    IsDeleted = c.IsDeleted
+                   
                     })
                 .ToList();
 

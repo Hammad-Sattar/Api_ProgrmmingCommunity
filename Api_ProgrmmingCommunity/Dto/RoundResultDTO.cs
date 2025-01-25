@@ -15,7 +15,7 @@
 
         public bool? IsQualified { get; set; }
 
-        public bool? IsDeleted { get; set; }
+       
 
         }
     }

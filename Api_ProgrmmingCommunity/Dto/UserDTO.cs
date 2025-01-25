@@ -9,7 +9,7 @@ namespace Api_ProgrmmingCommunity.Dto
 
         public string? Password { get; set; }
 
-        public string? Profimage { get; set; }
+      
 
         public int? Role { get; set; }
 
@@ -26,8 +26,7 @@ namespace Api_ProgrmmingCommunity.Dto
         public string? Firstname { get; set; }
 
         public string? Lastname { get; set; }
-        [JsonIgnore]
-        public bool? IsDeleted { get; internal set; }
+       
 
         public string? Empid { get; set; }
 

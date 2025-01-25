@@ -58,7 +58,7 @@ namespace Api_ProgrmmingCommunity.Controllers
                 Id = topic.Id,
                 SubjectCode = topic.SubjectCode,
                 Title = topic.Title,
-                IsDeleted = topic.IsDeleted
+             
                 };
 
             return Ok(topicDto);
@@ -76,11 +76,37 @@ namespace Api_ProgrmmingCommunity.Controllers
                 Id = t.Id,
                 SubjectCode = t.SubjectCode,
                 Title = t.Title,
-                IsDeleted = t.IsDeleted
+             
                 }).ToList();
 
             return Ok(topicDtos);
             }
+
+        [HttpGet("GetTopicsBySubject")]
+        public IActionResult GetTopicsBySubject(string subjectCode)
+            {
+           
+            if (string.IsNullOrEmpty(subjectCode))
+                {
+                return BadRequest("Subject code is required.");
+                }
+
+          
+            var topics = _context.Topics
+                .Where(t => t.SubjectCode == subjectCode && t.IsDeleted == false)
+                .ToList();
+
+            // Map topics to DTOs
+            var topicDtos = topics.Select(t => new TopicDTO
+                {
+                Id = t.Id,
+                SubjectCode = t.SubjectCode,
+                Title = t.Title,
+                }).ToList();
+
+            return Ok(topicDtos);
+            }
+
 
         [HttpDelete("DeleteTopic")]
         public IActionResult DeleteTopic([FromQuery] int? id, [FromQuery] string? subjectCode, [FromQuery] string? title)

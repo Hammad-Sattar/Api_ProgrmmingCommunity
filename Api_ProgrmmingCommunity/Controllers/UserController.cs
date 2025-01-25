@@ -40,7 +40,7 @@ namespace Api_ProgrmmingCommunity.Controllers
                 Lastname = user.Lastname,
                 Email = user.Email,
                 Phonenum = user.Phonenum,
-                Profimage = user.Profimage,
+               
                 Role = user.Role
                 };
 
@@ -74,10 +74,38 @@ namespace Api_ProgrmmingCommunity.Controllers
                 return BadRequest("User data is null.");
                 }
 
+            
+            if (_context.Users.Any(u => u.Email == userDto.Email && u.IsDeleted == false))
+                {
+                return Conflict("A user with the same Email already exists.");
+                }
+
+          
+            if (!string.IsNullOrEmpty(userDto.Empid) &&
+                _context.Users.Any(u => u.Empid == userDto.Empid && u.IsDeleted == false))
+                {
+                return Conflict("A user with the same Employee ID already exists.");
+                }
+
+           
+            if (!string.IsNullOrEmpty(userDto.RegNum) &&
+                _context.Users.Any(u => u.RegNum == userDto.RegNum && u.IsDeleted == false))
+                {
+                return Conflict("A user with the same Registration Number already exists.");
+                }
+
+           
+            if (!string.IsNullOrEmpty(userDto.Phonenum) &&
+                _context.Users.Any(u => u.Phonenum == userDto.Phonenum && u.IsDeleted == false))
+                {
+                return Conflict("A user with the same Phone Number already exists.");
+                }
+
+         
             var user = new User
                 {
                 Password = userDto.Password,
-                Profimage = userDto.Profimage,
+               
                 Role = userDto.Role,
                 RegNum = userDto.RegNum,
                 Section = userDto.Section,
@@ -86,17 +114,18 @@ namespace Api_ProgrmmingCommunity.Controllers
                 Phonenum = userDto.Phonenum,
                 Firstname = userDto.Firstname,
                 Lastname = userDto.Lastname,
-                Empid = userDto.Empid,
-                IsDeleted = false 
+                Empid = userDto.Empid
+               
                 };
 
             _context.Users.Add(user);
             _context.SaveChanges();
 
-            return CreatedAtAction(nameof(GetUser), new { id = user.Id }, user);
+            return Ok("User registered successfully.");
             }
 
-       
+
+
         [HttpGet("GetUser")]
         public IActionResult GetUser([FromQuery] string? email, [FromQuery] string? empId, [FromQuery] string? regNum)
             {
@@ -116,7 +145,7 @@ namespace Api_ProgrmmingCommunity.Controllers
                 {
                 Id = user.Id,
                 Password = user.Password,
-                Profimage = user.Profimage,
+               
                 Role = user.Role,
                 RegNum = user.RegNum,
                 Section = user.Section,
@@ -126,7 +155,7 @@ namespace Api_ProgrmmingCommunity.Controllers
                 Firstname = user.Firstname,
                 Lastname = user.Lastname,
                 Empid = user.Empid,
-                IsDeleted = user.IsDeleted
+              
                 };
 
             return Ok(userDto);
@@ -143,7 +172,7 @@ namespace Api_ProgrmmingCommunity.Controllers
                     {
                     Id = user.Id,
                     Password = user.Password,
-                    Profimage = user.Profimage,
+                   
                     Role = user.Role,
                     RegNum = user.RegNum,
                     Section = user.Section,
@@ -153,7 +182,7 @@ namespace Api_ProgrmmingCommunity.Controllers
                     Firstname = user.Firstname,
                     Lastname = user.Lastname,
                     Empid = user.Empid,
-                    IsDeleted = user.IsDeleted
+                  
                     }).ToList();
 
             return Ok(users);

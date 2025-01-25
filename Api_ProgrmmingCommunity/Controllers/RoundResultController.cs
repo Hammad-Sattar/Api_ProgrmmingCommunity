@@ -31,7 +31,7 @@ namespace Api_ProgrmmingCommunity.Controllers
                 Score = roundResultDto.Score,
                 CompetitionId = roundResultDto.CompetitionId,
                 IsQualified = roundResultDto.IsQualified,
-                IsDeleted = roundResultDto.IsDeleted
+               
                 };
 
             _context.RoundResults.Add(roundResult);
@@ -63,7 +63,7 @@ namespace Api_ProgrmmingCommunity.Controllers
                 Score = roundResult.Score,
                 CompetitionId = roundResult.CompetitionId,
                 IsQualified = roundResult.IsQualified,
-                IsDeleted = roundResult.IsDeleted
+               
                 };
 
             return Ok(roundResultDto);
@@ -84,7 +84,7 @@ namespace Api_ProgrmmingCommunity.Controllers
             roundResult.Score = roundResultDto.Score;
             roundResult.CompetitionId = roundResultDto.CompetitionId;
             roundResult.IsQualified = roundResultDto.IsQualified;
-            roundResult.IsDeleted = roundResultDto.IsDeleted;
+           
 
             _context.RoundResults.Update(roundResult);
             _context.SaveChanges();

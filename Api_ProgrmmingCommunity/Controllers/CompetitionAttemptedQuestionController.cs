@@ -31,7 +31,7 @@ namespace Api_ProgrmmingCommunity.Controllers
                 Answer = competitionAttemptedQuestionDto.Answer,
                 Score = competitionAttemptedQuestionDto.Score,
                 SubmissionTime = competitionAttemptedQuestionDto.SubmissionTime,
-                IsDeleted = competitionAttemptedQuestionDto.IsDeleted
+                
                 };
 
             _context.CompetitionAttemptedQuestions.Add(competitionAttemptedQuestion);
@@ -43,30 +43,33 @@ namespace Api_ProgrmmingCommunity.Controllers
         [HttpGet("GetCompetitionAttemptedQuestion")]
         public IActionResult GetCompetitionAttemptedQuestion([FromQuery] int? id, [FromQuery] int? competitionRoundQuestionId, [FromQuery] int? teamId)
             {
-            var competitionAttemptedQuestion = _context.CompetitionAttemptedQuestions
-                .FirstOrDefault(caq =>
+            var competitionAttemptedQuestions = _context.CompetitionAttemptedQuestions
+                .Where(caq =>
                     (id != null && caq.Id == id) ||
                     (competitionRoundQuestionId != null && caq.CompetitionRoundQuestionId == competitionRoundQuestionId) ||
-                    (teamId != null && caq.TeamId == teamId));
+                    (teamId != null && caq.TeamId == teamId))
+                .ToList();
 
-            if (competitionAttemptedQuestion == null)
+            if (competitionAttemptedQuestions == null || !competitionAttemptedQuestions.Any())
                 {
-                return NotFound("Competition attempted question not found.");
+                return NotFound("Competition attempted questions not found.");
                 }
 
-            var competitionAttemptedQuestionDto = new CompetitionAttemptedQuestionDTO
-                {
-                Id = competitionAttemptedQuestion.Id,
-                CompetitionRoundQuestionId = competitionAttemptedQuestion.CompetitionRoundQuestionId,
-                TeamId = competitionAttemptedQuestion.TeamId,
-                Answer = competitionAttemptedQuestion.Answer,
-                Score = competitionAttemptedQuestion.Score,
-                SubmissionTime = competitionAttemptedQuestion.SubmissionTime,
-                IsDeleted = competitionAttemptedQuestion.IsDeleted
-                };
+            var competitionAttemptedQuestionDtos = competitionAttemptedQuestions
+                .Select(caq => new CompetitionAttemptedQuestionDTO
+                    {
+                    Id = caq.Id,
+                    CompetitionRoundQuestionId = caq.CompetitionRoundQuestionId,
+                    TeamId = caq.TeamId,
+                    Answer = caq.Answer,
+                    Score = caq.Score,
+                    SubmissionTime = caq.SubmissionTime,
+                    })
+                .ToList();
 
-            return Ok(competitionAttemptedQuestionDto);
+            return Ok(competitionAttemptedQuestionDtos);
             }
+
 
         [HttpPut("UpdateCompetitionAttemptedQuestion")]
         public IActionResult UpdateCompetitionAttemptedQuestion(int id, [FromBody] CompetitionAttemptedQuestionDTO competitionAttemptedQuestionDto)
@@ -83,7 +86,7 @@ namespace Api_ProgrmmingCommunity.Controllers
             competitionAttemptedQuestion.Answer = competitionAttemptedQuestionDto.Answer;
             competitionAttemptedQuestion.Score = competitionAttemptedQuestionDto.Score;
             competitionAttemptedQuestion.SubmissionTime = competitionAttemptedQuestionDto.SubmissionTime;
-            competitionAttemptedQuestion.IsDeleted = competitionAttemptedQuestionDto.IsDeleted;
+
 
             _context.CompetitionAttemptedQuestions.Update(competitionAttemptedQuestion);
             _context.SaveChanges();

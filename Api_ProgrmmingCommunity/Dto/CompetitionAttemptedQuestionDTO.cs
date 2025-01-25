@@ -15,7 +15,7 @@
 
         public TimeOnly? SubmissionTime { get; set; }
 
-        public bool? IsDeleted { get; set; }
+
 
         }
     }

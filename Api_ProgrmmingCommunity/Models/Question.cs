@@ -21,6 +21,10 @@ public partial class Question
 
     public bool? IsDeleted { get; set; }
 
+    public int? Repeated { get; set; }
+
+    public bool? YearlyRepeated { get; set; }
+
     public virtual ICollection<CompetitionRoundQuestion> CompetitionRoundQuestions { get; set; } = new List<CompetitionRoundQuestion>();
 
     public virtual ICollection<QuestionOption> QuestionOptions { get; set; } = new List<QuestionOption>();

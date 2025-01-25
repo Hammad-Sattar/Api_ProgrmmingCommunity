@@ -56,7 +56,7 @@ namespace Api_ProgrmmingCommunity.Controllers
                 Id = expertTopic.Id,
                 ExpertId = expertTopic.ExpertId,
                 TopicId = expertTopic.TopicId,
-                IsDeleted = expertTopic.IsDeleted
+               
                 });
             }
 
@@ -70,7 +70,7 @@ namespace Api_ProgrmmingCommunity.Controllers
                     Id = et.Id,
                     ExpertId = et.ExpertId,
                     TopicId = et.TopicId,
-                    IsDeleted = et.IsDeleted
+                  
                     })
                 .ToList();
 

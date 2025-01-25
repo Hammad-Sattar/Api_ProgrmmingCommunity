@@ -56,7 +56,7 @@ namespace Api_ProgrmmingCommunity.Controllers
                 Id = studentSubject.Id,
                 StudentId = studentSubject.StudentId,
                 SubjectCode = studentSubject.SubjectCode,
-                IsDeleted = studentSubject.IsDeleted
+               
                 });
             }
 
@@ -70,7 +70,7 @@ namespace Api_ProgrmmingCommunity.Controllers
                     Id = ss.Id,
                     StudentId = ss.StudentId,
                     SubjectCode = ss.SubjectCode,
-                    IsDeleted = ss.IsDeleted
+                   
                     })
                 .ToList();
 

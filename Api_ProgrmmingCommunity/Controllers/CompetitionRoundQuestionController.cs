@@ -28,7 +28,7 @@ namespace Api_ProgrmmingCommunity.Controllers
                 {
                 CompetitionRoundId = competitionRoundQuestionDto.CompetitionRoundId,
                 QuestionId = competitionRoundQuestionDto.QuestionId,
-                IsDeleted = competitionRoundQuestionDto.IsDeleted
+  
                 };
 
             _context.CompetitionRoundQuestions.Add(competitionRoundQuestion);
@@ -40,27 +40,30 @@ namespace Api_ProgrmmingCommunity.Controllers
         [HttpGet("GetCompetitionRoundQuestion")]
         public IActionResult GetCompetitionRoundQuestion([FromQuery] int? id, [FromQuery] int? competitionRoundId, [FromQuery] int? questionId)
             {
-            var competitionRoundQuestion = _context.CompetitionRoundQuestions
-                .FirstOrDefault(crq =>
+            var competitionRoundQuestions = _context.CompetitionRoundQuestions
+                .Where(crq =>
                     (id != null && crq.Id == id) ||
                     (competitionRoundId != null && crq.CompetitionRoundId == competitionRoundId) ||
-                    (questionId != null && crq.QuestionId == questionId));
+                    (questionId != null && crq.QuestionId == questionId))
+                .ToList();
 
-            if (competitionRoundQuestion == null)
+            if (competitionRoundQuestions == null || !competitionRoundQuestions.Any())
                 {
-                return NotFound("Competition round question not found.");
+                return NotFound("Competition round questions not found.");
                 }
 
-            var competitionRoundQuestionDto = new CompetitionRoundQuestionDTO
-                {
-                Id = competitionRoundQuestion.Id,
-                CompetitionRoundId = competitionRoundQuestion.CompetitionRoundId,
-                QuestionId = competitionRoundQuestion.QuestionId,
-                IsDeleted = competitionRoundQuestion.IsDeleted
-                };
+            var competitionRoundQuestionDtos = competitionRoundQuestions
+                .Select(crq => new CompetitionRoundQuestionDTO
+                    {
+                    Id = crq.Id,
+                    CompetitionRoundId = crq.CompetitionRoundId,
+                    QuestionId = crq.QuestionId,
+                    })
+                .ToList();
 
-            return Ok(competitionRoundQuestionDto);
+            return Ok(competitionRoundQuestionDtos);
             }
+
 
         [HttpPut("UpdateCompetitionRoundQuestion")]
         public IActionResult UpdateCompetitionRoundQuestion(int id, [FromBody] CompetitionRoundQuestionDTO competitionRoundQuestionDto)
@@ -74,7 +77,7 @@ namespace Api_ProgrmmingCommunity.Controllers
 
             competitionRoundQuestion.CompetitionRoundId = competitionRoundQuestionDto.CompetitionRoundId;
             competitionRoundQuestion.QuestionId = competitionRoundQuestionDto.QuestionId;
-            competitionRoundQuestion.IsDeleted = competitionRoundQuestionDto.IsDeleted;
+
 
             _context.CompetitionRoundQuestions.Update(competitionRoundQuestion);
             _context.SaveChanges();

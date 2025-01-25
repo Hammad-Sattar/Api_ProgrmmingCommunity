@@ -56,7 +56,7 @@ namespace Api_ProgrmmingCommunity.Controllers
                 MaxLevel = task.MaxLevel,
                 StartDate = task.StartDate,
                 EndDate = task.EndDate,
-                IsDeleted = task.IsDeleted
+               
                 });
             }
 
@@ -72,7 +72,7 @@ namespace Api_ProgrmmingCommunity.Controllers
                     MaxLevel = t.MaxLevel,
                     StartDate = t.StartDate,
                     EndDate = t.EndDate,
-                    IsDeleted = t.IsDeleted
+                   
                     })
                 .ToList();
 

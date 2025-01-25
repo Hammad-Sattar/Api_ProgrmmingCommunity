@@ -9,7 +9,7 @@
 
         public string? SubjectCode { get; set; }
 
-        public bool? IsDeleted { get; set; }
+      
 
         }
     }

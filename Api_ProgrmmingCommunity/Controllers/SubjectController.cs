@@ -54,7 +54,7 @@ namespace Api_ProgrmmingCommunity.Controllers
                 {
                 Code = subject.Code,
                 Title = subject.Title,
-                IsDeleted = subject.IsDeleted
+               
                 };
 
             return Ok(subjectDto);
@@ -69,7 +69,7 @@ namespace Api_ProgrmmingCommunity.Controllers
                     {
                     Code = s.Code,
                     Title = s.Title,
-                    IsDeleted = s.IsDeleted
+                   
                     }).ToList();
 
             return Ok(subjects);

@@ -53,7 +53,7 @@ namespace Api_ProgrmmingCommunity.Controllers
                 Id = competitionTeam.Id,
                 CompetitionId = competitionTeam.CompetitionId,
                 TeamId = competitionTeam.TeamId,
-                IsDeleted = competitionTeam.IsDeleted
+              
                 });
             }
 
@@ -67,7 +67,7 @@ namespace Api_ProgrmmingCommunity.Controllers
                     Id = ct.Id,
                     CompetitionId = ct.CompetitionId,
                     TeamId = ct.TeamId,
-                    IsDeleted = ct.IsDeleted
+                    
                     })
                 .ToList();
 

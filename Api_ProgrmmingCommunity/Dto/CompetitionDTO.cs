@@ -18,7 +18,7 @@
 
         public int? UserId { get; set; }
 
-        public bool? IsDeleted { get; set; }
+  
 
 
 

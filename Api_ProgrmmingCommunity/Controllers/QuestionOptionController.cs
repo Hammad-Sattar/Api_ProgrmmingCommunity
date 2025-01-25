@@ -2,6 +2,7 @@
 using Api_ProgrmmingCommunity.Models;
 using System.Linq;
 using Api_ProgrmmingCommunity.Dto;
+using MapProjectApi.Models.DTOs;
 
 namespace Api_ProgrmmingCommunity.Controllers
     {
@@ -37,6 +38,43 @@ namespace Api_ProgrmmingCommunity.Controllers
 
             return CreatedAtAction(nameof(GetOption), new { id = option.Id }, option);
             }
+        [HttpGet("GetOptionsByQuestionId")]
+        public IActionResult GetOptionsByQuestionId([FromQuery] int questionId)
+            {
+           
+            var question = _context.Questions.FirstOrDefault(q => q.Id == questionId);
+            if (question == null)
+                {
+                return NotFound("The question does not exist.");
+                }
+
+            if (question.Type != 2)
+                {
+                return BadRequest("The question does not have options as its type is not Mcq.");
+                }
+
+           
+            var options = _context.QuestionOptions
+                .Where(o => o.IsDeleted == false && o.QuestionId == questionId)
+                .ToList();
+
+            if (!options.Any())
+                {
+                return NotFound("No options found for the given question ID or they are marked as deleted.");
+                }
+
+            var optionDtos = options.Select(o => new QuestionOptionDTO
+                {
+               
+                QuestionId = o.QuestionId,
+                Option = o.Option,
+                IsCorrect = o.IsCorrect,
+               
+                }).ToList();
+
+            return Ok(optionDtos);
+            }
+
 
         [HttpGet("GetOption")]
         public IActionResult GetOption([FromQuery] int? id, [FromQuery] int? questionId)
@@ -52,11 +90,11 @@ namespace Api_ProgrmmingCommunity.Controllers
 
             return Ok(new QuestionOptionDTO
                 {
-                Id = option.Id,
+            
                 QuestionId = option.QuestionId,
                 Option = option.Option,
                 IsCorrect = option.IsCorrect,
-                IsDeleted = option.IsDeleted
+            
                 });
             }
 
@@ -67,11 +105,11 @@ namespace Api_ProgrmmingCommunity.Controllers
                 .Where(o => o.IsDeleted == false)
                 .Select(o => new QuestionOptionDTO
                     {
-                    Id = o.Id,
+                  
                     QuestionId = o.QuestionId,
                     Option = o.Option,
                     IsCorrect = o.IsCorrect,
-                    IsDeleted = o.IsDeleted
+                   
                     })
                 .ToList();
 
@@ -96,5 +134,7 @@ namespace Api_ProgrmmingCommunity.Controllers
 
             return Ok("Option marked as deleted.");
             }
+
+      
         }
     }

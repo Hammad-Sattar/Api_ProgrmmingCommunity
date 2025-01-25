@@ -8,7 +8,7 @@
 
         public int? TopicId { get; set; }
 
-        public bool? IsDeleted { get; set; }
+       
 
         }
     }

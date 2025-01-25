@@ -12,7 +12,7 @@
 
         public int? Member3Id { get; set; }
 
-        public bool? IsDeleted { get; set; }
+       
 
         }
     }

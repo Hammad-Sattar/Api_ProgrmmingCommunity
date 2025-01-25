@@ -11,6 +11,6 @@
 
             public int? TopTeams { get; set; }
 
-            public bool? IsDeleted { get; set; }
+           
             }
     }
