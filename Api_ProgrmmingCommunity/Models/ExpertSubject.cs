@@ -11,6 +11,8 @@ public partial class ExpertSubject
 
     public string? SubjectCode { get; set; }
 
+    public bool? IsDeleted { get; set; }
+
     public virtual User? Expert { get; set; }
 
     public virtual Subject? SubjectCodeNavigation { get; set; }

@@ -3,7 +3,8 @@
     public class CompetitionDTO
     {
 
-        public int Id { get; set; }
+
+        public int CompetitionId { get; set; }
 
         public string? Title { get; set; }
 
@@ -13,6 +14,13 @@
 
         public int? MaxLevel { get; set; }
 
+        public string? Password { get; set; }
 
+        public int? UserId { get; set; }
+
+  
+
+
+
+        }
     }
-}
