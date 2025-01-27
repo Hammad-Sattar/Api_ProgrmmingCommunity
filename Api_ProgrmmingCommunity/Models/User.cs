@@ -29,6 +29,8 @@ public partial class User
 
     public string? Empid { get; set; }
 
+    public int? Level { get; set; }
+
     public virtual ICollection<Competition> Competitions { get; set; } = new List<Competition>();
 
     public virtual ICollection<ExpertSubject> ExpertSubjects { get; set; } = new List<ExpertSubject>();

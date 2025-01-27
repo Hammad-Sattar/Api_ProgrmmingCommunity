@@ -21,6 +21,8 @@ public partial class Competition
 
     public bool? IsDeleted { get; set; }
 
+    public int? Rounds { get; set; }
+
     public virtual ICollection<CompetitionRound> CompetitionRounds { get; set; } = new List<CompetitionRound>();
 
     public virtual ICollection<CompetitionTeam> CompetitionTeams { get; set; } = new List<CompetitionTeam>();
