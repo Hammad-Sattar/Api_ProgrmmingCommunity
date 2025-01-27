@@ -76,6 +76,7 @@ public partial class ProgrammingCommunityContext : DbContext
                 .HasMaxLength(255)
                 .IsUnicode(false)
                 .HasColumnName("password");
+            entity.Property(e => e.Rounds).HasColumnName("rounds");
             entity.Property(e => e.Title)
                 .HasMaxLength(255)
                 .IsUnicode(false)
@@ -533,3 +534,5 @@ public partial class ProgrammingCommunityContext : DbContext
 
     partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
     }
+
+

@@ -17,8 +17,9 @@
         public string? Password { get; set; }
 
         public int? UserId { get; set; }
+        public int? Rounds { get; set; }
 
-  
+
 
 
 

@@ -33,6 +33,7 @@ namespace Api_ProgrmmingCommunity.Controllers
                 MaxLevel = competitionDto.MaxLevel,
                 Password = competitionDto.Password,
                 UserId = competitionDto.UserId,
+                Rounds = competitionDto.Rounds,
               
                 };
 
@@ -62,6 +63,7 @@ namespace Api_ProgrmmingCommunity.Controllers
                 MaxLevel = competition.MaxLevel,
                 Password = competition.Password,
                 UserId = competition.UserId,
+                Rounds = competition.Rounds,
             
                 });
             }
@@ -80,6 +82,7 @@ namespace Api_ProgrmmingCommunity.Controllers
                     MaxLevel = c.MaxLevel,
                     Password = c.Password,
                     UserId = c.UserId,
+                    Rounds = c.Rounds,
                    
                     })
                 .ToList();
