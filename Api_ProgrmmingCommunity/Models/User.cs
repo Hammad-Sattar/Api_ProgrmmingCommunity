@@ -25,11 +25,9 @@ public partial class User
 
     public string? Lastname { get; set; }
 
-    public bool? IsDeleted { get; set; }
-
-    public string? Empid { get; set; }
-
     public int? Level { get; set; }
+
+    public bool? IsDeleted { get; set; }
 
     public virtual ICollection<Competition> Competitions { get; set; } = new List<Competition>();
 
@@ -43,9 +41,5 @@ public partial class User
 
     public virtual ICollection<SubmittedTask> SubmittedTasks { get; set; } = new List<SubmittedTask>();
 
-    public virtual ICollection<Team> TeamMember1s { get; set; } = new List<Team>();
-
-    public virtual ICollection<Team> TeamMember2s { get; set; } = new List<Team>();
-
-    public virtual ICollection<Team> TeamMember3s { get; set; } = new List<Team>();
+    public virtual ICollection<TeamMember> TeamMembers { get; set; } = new List<TeamMember>();
 }

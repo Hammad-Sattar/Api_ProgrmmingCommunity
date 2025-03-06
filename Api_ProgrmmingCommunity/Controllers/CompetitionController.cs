@@ -40,7 +40,7 @@ namespace Api_ProgrmmingCommunity.Controllers
             _context.Competitions.Add(competition);
             _context.SaveChanges();
 
-            return CreatedAtAction(nameof(GetCompetition), new { id = competition.CompetitionId }, competition);
+            return CreatedAtAction(nameof(GetCompetition), new { id = competition.CompetitionId });
             }
 
         [HttpGet("GetCompetition")]

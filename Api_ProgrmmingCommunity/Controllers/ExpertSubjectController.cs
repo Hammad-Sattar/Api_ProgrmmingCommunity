@@ -34,31 +34,43 @@ namespace Api_ProgrmmingCommunity.Controllers
             _context.ExpertSubjects.Add(expertSubject);
             _context.SaveChanges();
 
-            return CreatedAtAction(nameof(GetExpertSubject), new { id = expertSubject.Id }, expertSubject);
+            return Ok("Subject Added");
             }
 
         [HttpGet("GetExpertSubject")]
         public IActionResult GetExpertSubject([FromQuery] int? id, [FromQuery] int? expertId, [FromQuery] string? subjectCode)
             {
-            var expertSubject = _context.ExpertSubjects.FirstOrDefault(es =>
-                es.IsDeleted == false &&
-                ((id != null && es.Id == id) ||
-                 (expertId != null && es.ExpertId == expertId) ||
-                 (subjectCode != null && es.SubjectCode == subjectCode)));
+            var query = _context.ExpertSubjects
+                .Where(es => es.IsDeleted == false)  // Fix: Explicitly compare with `false`
+                .Join(_context.Subjects.Where(s => s.IsDeleted == false), // Fix for Subjects table
+                      es => es.SubjectCode,
+                      s => s.Code,
+                      (es, s) => new
+                          {
+                          Id = es.Id,
+                          ExpertId = es.ExpertId,
+                          SubjectCode = es.SubjectCode,
+                          Title = s.Title
+                          });
 
-            if (expertSubject == null)
-                {
-                return NotFound("ExpertSubject not found or is marked as deleted.");
-                }
+            if (id != null)
+                query = query.Where(es => es.Id == id);
 
-            return Ok(new ExpertSubjectDTO
-                {
-                Id = expertSubject.Id,
-                ExpertId = expertSubject.ExpertId,
-                SubjectCode = expertSubject.SubjectCode,
-               
-                });
+            if (expertId != null)
+                query = query.Where(es => es.ExpertId == expertId);
+
+            if (subjectCode != null)
+                query = query.Where(es => es.SubjectCode == subjectCode);
+
+            var result = query.ToList();
+
+            if (!result.Any())
+                return NotFound("No matching ExpertSubject found or it is marked as deleted.");
+
+            return Ok(result);
             }
+
+
 
         [HttpGet("GetAllExpertSubjects")]
         public IActionResult GetAllExpertSubjects()

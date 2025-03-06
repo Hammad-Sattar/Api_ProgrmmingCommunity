@@ -13,7 +13,8 @@
 
         public int? Score { get; set; }
 
-        public TimeOnly? SubmissionTime { get; set; }
+        public TimeOnly? SubmissionTime { get; set; } = TimeOnly.FromDateTime(DateTime.Now);
+
 
 
 

@@ -51,7 +51,7 @@ namespace Api_ProgrmmingCommunity.Controllers
                 }
             else if (user.Role == 2)
                 {
-                userDto.Empid = user.Empid;
+               
                 return Ok(userDto);
                 }
             else if (user.Role == 3 || user.Role == 4)
@@ -81,11 +81,7 @@ namespace Api_ProgrmmingCommunity.Controllers
                 }
 
           
-            if (!string.IsNullOrEmpty(userDto.Empid) &&
-                _context.Users.Any(u => u.Empid == userDto.Empid && u.IsDeleted == false))
-                {
-                return Conflict("A user with the same Employee ID already exists.");
-                }
+            
 
            
             if (!string.IsNullOrEmpty(userDto.RegNum) &&
@@ -114,7 +110,7 @@ namespace Api_ProgrmmingCommunity.Controllers
                 Phonenum = userDto.Phonenum,
                 Firstname = userDto.Firstname,
                 Lastname = userDto.Lastname,
-                Empid = userDto.Empid
+               
                
                 };
 
@@ -133,7 +129,6 @@ namespace Api_ProgrmmingCommunity.Controllers
             var user = _context.Users.FirstOrDefault(u =>
                 u.IsDeleted == false && 
                 ((email != null && u.Email == email) ||
-                 (empId != null && u.Empid == empId) ||
                  (regNum != null && u.RegNum == regNum)));
 
             if (user == null)
@@ -154,7 +149,7 @@ namespace Api_ProgrmmingCommunity.Controllers
                 Phonenum = user.Phonenum,
                 Firstname = user.Firstname,
                 Lastname = user.Lastname,
-                Empid = user.Empid,
+                
               
                 };
 
@@ -181,7 +176,7 @@ namespace Api_ProgrmmingCommunity.Controllers
                     Phonenum = user.Phonenum,
                     Firstname = user.Firstname,
                     Lastname = user.Lastname,
-                    Empid = user.Empid,
+                    
                    
                   
                     }).ToList();
@@ -196,7 +191,7 @@ namespace Api_ProgrmmingCommunity.Controllers
           
             var user = _context.Users.FirstOrDefault(u =>
                 (email != null && u.Email == email) ||
-                (empId != null && u.Empid == empId) ||
+                
                 (regNum != null && u.RegNum == regNum));
 
             if (user == null)
