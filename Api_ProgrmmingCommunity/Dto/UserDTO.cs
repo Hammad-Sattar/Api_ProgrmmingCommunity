@@ -27,8 +27,6 @@ namespace Api_ProgrmmingCommunity.Dto
 
         public string? Lastname { get; set; }
        
-
-        public string? Empid { get; set; }
       
 
         }

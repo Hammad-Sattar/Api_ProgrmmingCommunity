@@ -83,14 +83,14 @@ namespace MapProjectApi.Controllers
                 };
 
             _context.Questions.Add(question);
-            await _context.SaveChangesAsync();  // Save to generate the Question ID
+            await _context.SaveChangesAsync();  
 
-            // If Type is 2, save the options
+           
             if (model.Type == 2 && model.Options != null && model.Options.Any())
                 {
                 var options = model.Options.Select(opt => new QuestionOption
                     {
-                    QuestionId = question.Id,  // Assign the generated QuestionId
+                    QuestionId = question.Id, 
                     Option = opt.Option,
                     IsCorrect = opt.IsCorrect
                     }).ToList();

@@ -43,31 +43,32 @@ namespace Api_ProgrmmingCommunity.Controllers
         [HttpGet("GetRoundResult")]
         public IActionResult GetRoundResult([FromQuery] int? id, [FromQuery] int? competitionRoundId, [FromQuery] int? teamId, [FromQuery] int? competitionId)
             {
-            var roundResult = _context.RoundResults
-                .FirstOrDefault(rr =>
+            var roundResults = _context.RoundResults
+                .Where(rr =>
                     (id != null && rr.Id == id) ||
                     (competitionRoundId != null && rr.CompetitionRoundId == competitionRoundId) ||
                     (teamId != null && rr.TeamId == teamId) ||
-                    (competitionId != null && rr.CompetitionId == competitionId));
+                    (competitionId != null && rr.CompetitionId == competitionId))
+                .ToList();
 
-            if (roundResult == null)
+            if (roundResults == null || !roundResults.Any())
                 {
-                return NotFound("Round result not found.");
+                return NotFound("Round results not found.");
                 }
 
-            var roundResultDto = new RoundResultDTO
+            var roundResultsDto = roundResults.Select(rr => new RoundResultDTO
                 {
-                Id = roundResult.Id,
-                CompetitionRoundId = roundResult.CompetitionRoundId,
-                TeamId = roundResult.TeamId,
-                Score = roundResult.Score,
-                CompetitionId = roundResult.CompetitionId,
-                IsQualified = roundResult.IsQualified,
-               
-                };
+                Id = rr.Id,
+                CompetitionRoundId = rr.CompetitionRoundId,
+                TeamId = rr.TeamId,
+                Score = rr.Score,
+                CompetitionId = rr.CompetitionId,
+                IsQualified = rr.IsQualified
+                }).ToList();
 
-            return Ok(roundResultDto);
+            return Ok(roundResultsDto);
             }
+
 
         [HttpPut("UpdateRoundResult")]
         public IActionResult UpdateRoundResult(int id, [FromBody] RoundResultDTO roundResultDto)

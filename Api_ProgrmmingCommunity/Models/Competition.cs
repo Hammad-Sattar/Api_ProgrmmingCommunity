@@ -17,11 +17,11 @@ public partial class Competition
 
     public string? Password { get; set; }
 
+    public int? Rounds { get; set; }
+
     public int? UserId { get; set; }
 
     public bool? IsDeleted { get; set; }
-
-    public int? Rounds { get; set; }
 
     public virtual ICollection<CompetitionRound> CompetitionRounds { get; set; } = new List<CompetitionRound>();
 

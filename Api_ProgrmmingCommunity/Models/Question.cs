@@ -19,11 +19,11 @@ public partial class Question
 
     public int? Type { get; set; }
 
-    public bool? IsDeleted { get; set; }
-
     public int? Repeated { get; set; }
 
     public bool? YearlyRepeated { get; set; }
+
+    public bool? IsDeleted { get; set; }
 
     public virtual ICollection<CompetitionRoundQuestion> CompetitionRoundQuestions { get; set; } = new List<CompetitionRoundQuestion>();
 
