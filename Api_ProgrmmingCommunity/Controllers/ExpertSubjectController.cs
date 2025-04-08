@@ -41,8 +41,8 @@ namespace Api_ProgrmmingCommunity.Controllers
         public IActionResult GetExpertSubject([FromQuery] int? id, [FromQuery] int? expertId, [FromQuery] string? subjectCode)
             {
             var query = _context.ExpertSubjects
-                .Where(es => es.IsDeleted == false)  // Fix: Explicitly compare with `false`
-                .Join(_context.Subjects.Where(s => s.IsDeleted == false), // Fix for Subjects table
+                .Where(es => es.IsDeleted == false)  
+                .Join(_context.Subjects.Where(s => s.IsDeleted == false),
                       es => es.SubjectCode,
                       s => s.Code,
                       (es, s) => new
@@ -69,6 +69,7 @@ namespace Api_ProgrmmingCommunity.Controllers
 
             return Ok(result);
             }
+       
 
 
 

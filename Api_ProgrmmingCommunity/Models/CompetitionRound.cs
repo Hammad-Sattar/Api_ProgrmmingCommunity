@@ -19,6 +19,8 @@ public partial class CompetitionRound
 
     public virtual Competition? Competition { get; set; }
 
+    public virtual ICollection<CompetitionAttemptedQuestion> CompetitionAttemptedQuestions { get; set; } = new List<CompetitionAttemptedQuestion>();
+
     public virtual ICollection<CompetitionRoundQuestion> CompetitionRoundQuestions { get; set; } = new List<CompetitionRoundQuestion>();
 
     public virtual ICollection<RoundQualificationCriterion> RoundQualificationCriterionFromRounds { get; set; } = new List<RoundQualificationCriterion>();

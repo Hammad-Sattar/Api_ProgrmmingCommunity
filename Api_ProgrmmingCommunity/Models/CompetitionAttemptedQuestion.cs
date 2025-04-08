@@ -7,7 +7,11 @@ public partial class CompetitionAttemptedQuestion
 {
     public int Id { get; set; }
 
-    public int? CompetitionRoundQuestionId { get; set; }
+    public int? CompetitionId { get; set; }
+
+    public int? CompetitionRoundId { get; set; }
+
+    public int? QuestionId { get; set; }
 
     public int? TeamId { get; set; }
 
@@ -19,7 +23,11 @@ public partial class CompetitionAttemptedQuestion
 
     public bool? IsDeleted { get; set; }
 
-    public virtual CompetitionRoundQuestion? CompetitionRoundQuestion { get; set; }
+    public virtual Competition? Competition { get; set; }
+
+    public virtual CompetitionRound? CompetitionRound { get; set; }
+
+    public virtual Question? Question { get; set; }
 
     public virtual Team? Team { get; set; }
 }

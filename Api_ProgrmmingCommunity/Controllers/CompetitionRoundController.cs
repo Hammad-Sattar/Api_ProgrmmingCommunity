@@ -77,7 +77,7 @@ namespace YourNamespace.Controllers
             _context.CompetitionRounds.Add(round);
             await _context.SaveChangesAsync();
 
-            return Ok(new { message = "Competition round added successfully", RoundId = round.Id });
+            return Ok(new {  RoundId = round.Id });
             }
 
         // PUT: api/CompetitionRound/Update/{id}

@@ -65,7 +65,7 @@ namespace Api_ProgrmmingCommunity.Controllers
 
             var optionDtos = options.Select(o => new QuestionOptionDTO
                 {
-               
+               Id = o.Id,
                 QuestionId = o.QuestionId,
                 Option = o.Option,
                 IsCorrect = o.IsCorrect,

@@ -30,13 +30,14 @@ namespace Api_ProgrmmingCommunity.Controllers
                 MaxLevel = taskDto.MaxLevel,
                 StartDate = taskDto.StartDate,
                 EndDate = taskDto.EndDate,
+                UserId = taskDto.UserId,
                 IsDeleted = false
                 };
 
             _context.Tasks.Add(task);
             _context.SaveChanges();
 
-            return CreatedAtAction(nameof(GetTask), new { id = task.Id }, task);
+            return Ok(new { id = task.Id });
             }
 
         [HttpGet("GetTask")]
@@ -56,6 +57,7 @@ namespace Api_ProgrmmingCommunity.Controllers
                 MaxLevel = task.MaxLevel,
                 StartDate = task.StartDate,
                 EndDate = task.EndDate,
+                UserId=task.UserId
                
                 });
             }
@@ -72,11 +74,21 @@ namespace Api_ProgrmmingCommunity.Controllers
                     MaxLevel = t.MaxLevel,
                     StartDate = t.StartDate,
                     EndDate = t.EndDate,
+                    UserId=t.UserId
                    
                     })
                 .ToList();
 
             return Ok(tasks);
+            }
+        [HttpGet("GetTaskQuestionCount/{taskId}")]
+        public IActionResult GetTaskQuestionCount(int taskId)
+            {
+            var questionCount = _context.TaskQuestions
+                .Where(tq => tq.TaskId == taskId && tq.IsDeleted == false)
+                .Count();
+
+            return Ok(new { TaskId = taskId, QuestionCount = questionCount });
             }
 
         [HttpDelete("DeleteTask")]

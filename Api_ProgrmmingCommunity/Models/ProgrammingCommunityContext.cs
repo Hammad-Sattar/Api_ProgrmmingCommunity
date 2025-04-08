@@ -59,13 +59,13 @@ public partial class ProgrammingCommunityContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseSqlServer("Server=PROGRAMMER;Database=ProgrammingCommunity;User ID=sa;Password=123;TrustServerCertificate=True;");
+        => optionsBuilder.UseSqlServer("Server=Programmer;Database= ProgrammingCommunity;User=sa;Password=123;TrustServerCertificate=True;");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Competition>(entity =>
         {
-            entity.HasKey(e => e.CompetitionId).HasName("PK__Competit__BB383B58E54E3292");
+            entity.HasKey(e => e.CompetitionId).HasName("PK__Competit__BB383B580BC87E3F");
 
             entity.Property(e => e.CompetitionId).HasColumnName("competition_id");
             entity.Property(e => e.IsDeleted)
@@ -87,37 +87,47 @@ public partial class ProgrammingCommunityContext : DbContext
 
             entity.HasOne(d => d.User).WithMany(p => p.Competitions)
                 .HasForeignKey(d => d.UserId)
-                .HasConstraintName("FK__Competiti__user___6D0D32F4");
+                .HasConstraintName("FK__Competiti__user___6EF57B66");
         });
 
         modelBuilder.Entity<CompetitionAttemptedQuestion>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Competit__3213E83FC0FE5C95");
+            entity.HasKey(e => e.Id).HasName("PK__Competit__3213E83F703A97EA");
 
             entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.Answer)
                 .IsUnicode(false)
                 .HasColumnName("answer");
-            entity.Property(e => e.CompetitionRoundQuestionId).HasColumnName("competition_round_question_id");
+            entity.Property(e => e.CompetitionId).HasColumnName("competition_id");
+            entity.Property(e => e.CompetitionRoundId).HasColumnName("competition_round_id");
             entity.Property(e => e.IsDeleted)
                 .HasDefaultValue(false)
                 .HasColumnName("isDeleted");
+            entity.Property(e => e.QuestionId).HasColumnName("question_id");
             entity.Property(e => e.Score).HasColumnName("score");
             entity.Property(e => e.SubmissionTime).HasColumnName("submission_time");
             entity.Property(e => e.TeamId).HasColumnName("team_id");
 
-            entity.HasOne(d => d.CompetitionRoundQuestion).WithMany(p => p.CompetitionAttemptedQuestions)
-                .HasForeignKey(d => d.CompetitionRoundQuestionId)
-                .HasConstraintName("FK__Competiti__compe__02FC7413");
+            entity.HasOne(d => d.Competition).WithMany(p => p.CompetitionAttemptedQuestions)
+                .HasForeignKey(d => d.CompetitionId)
+                .HasConstraintName("FK__Competiti__compe__04E4BC85");
+
+            entity.HasOne(d => d.CompetitionRound).WithMany(p => p.CompetitionAttemptedQuestions)
+                .HasForeignKey(d => d.CompetitionRoundId)
+                .HasConstraintName("FK__Competiti__compe__05D8E0BE");
+
+            entity.HasOne(d => d.Question).WithMany(p => p.CompetitionAttemptedQuestions)
+                .HasForeignKey(d => d.QuestionId)
+                .HasConstraintName("FK__Competiti__quest__06CD04F7");
 
             entity.HasOne(d => d.Team).WithMany(p => p.CompetitionAttemptedQuestions)
                 .HasForeignKey(d => d.TeamId)
-                .HasConstraintName("FK__Competiti__team___03F0984C");
+                .HasConstraintName("FK__Competiti__team___07C12930");
         });
 
         modelBuilder.Entity<CompetitionRound>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Competit__3213E83F2750876F");
+            entity.HasKey(e => e.Id).HasName("PK__Competit__3213E83F9F9CC2EF");
 
             entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.CompetitionId).HasColumnName("competition_id");
@@ -130,12 +140,12 @@ public partial class ProgrammingCommunityContext : DbContext
 
             entity.HasOne(d => d.Competition).WithMany(p => p.CompetitionRounds)
                 .HasForeignKey(d => d.CompetitionId)
-                .HasConstraintName("FK__Competiti__compe__70DDC3D8");
+                .HasConstraintName("FK__Competiti__compe__72C60C4A");
         });
 
         modelBuilder.Entity<CompetitionRoundQuestion>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Competit__3213E83F873890F1");
+            entity.HasKey(e => e.Id).HasName("PK__Competit__3213E83F8AE70C4C");
 
             entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.CompetitionRoundId).HasColumnName("competition_round_id");
@@ -146,16 +156,16 @@ public partial class ProgrammingCommunityContext : DbContext
 
             entity.HasOne(d => d.CompetitionRound).WithMany(p => p.CompetitionRoundQuestions)
                 .HasForeignKey(d => d.CompetitionRoundId)
-                .HasConstraintName("FK__Competiti__compe__74AE54BC");
+                .HasConstraintName("FK__Competiti__compe__76969D2E");
 
             entity.HasOne(d => d.Question).WithMany(p => p.CompetitionRoundQuestions)
                 .HasForeignKey(d => d.QuestionId)
-                .HasConstraintName("FK__Competiti__quest__75A278F5");
+                .HasConstraintName("FK__Competiti__quest__778AC167");
         });
 
         modelBuilder.Entity<CompetitionTeam>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Competit__3213E83F149C34DD");
+            entity.HasKey(e => e.Id).HasName("PK__Competit__3213E83F8A311C97");
 
             entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.CompetitionId).HasColumnName("competition_id");
@@ -166,16 +176,16 @@ public partial class ProgrammingCommunityContext : DbContext
 
             entity.HasOne(d => d.Competition).WithMany(p => p.CompetitionTeams)
                 .HasForeignKey(d => d.CompetitionId)
-                .HasConstraintName("FK__Competiti__compe__797309D9");
+                .HasConstraintName("FK__Competiti__compe__7B5B524B");
 
             entity.HasOne(d => d.Team).WithMany(p => p.CompetitionTeams)
                 .HasForeignKey(d => d.TeamId)
-                .HasConstraintName("FK__Competiti__team___7A672E12");
+                .HasConstraintName("FK__Competiti__team___7C4F7684");
         });
 
         modelBuilder.Entity<ExpertSubject>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__ExpertSu__3213E83FAB07BFE9");
+            entity.HasKey(e => e.Id).HasName("PK__ExpertSu__3213E83FADF86574");
 
             entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.ExpertId).HasColumnName("expert_id");
@@ -198,7 +208,7 @@ public partial class ProgrammingCommunityContext : DbContext
 
         modelBuilder.Entity<ExpertTopic>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__ExpertTo__3213E83F0DDEA096");
+            entity.HasKey(e => e.Id).HasName("PK__ExpertTo__3213E83FF52806D5");
 
             entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.ExpertId).HasColumnName("expert_id");
@@ -218,7 +228,7 @@ public partial class ProgrammingCommunityContext : DbContext
 
         modelBuilder.Entity<Question>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Question__3213E83F1C5D4A65");
+            entity.HasKey(e => e.Id).HasName("PK__Question__3213E83F098F3BDA");
 
             entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.Difficulty).HasColumnName("difficulty");
@@ -253,7 +263,7 @@ public partial class ProgrammingCommunityContext : DbContext
 
         modelBuilder.Entity<QuestionOption>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Question__3213E83FC7515D56");
+            entity.HasKey(e => e.Id).HasName("PK__Question__3213E83F7E513ECA");
 
             entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.IsCorrect).HasColumnName("isCorrect");
@@ -273,7 +283,7 @@ public partial class ProgrammingCommunityContext : DbContext
 
         modelBuilder.Entity<RoundQualificationCriterion>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__RoundQua__3213E83F7306A83D");
+            entity.HasKey(e => e.Id).HasName("PK__RoundQua__3213E83F83DEFC3A");
 
             entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.FromRoundId).HasColumnName("from_round_id");
@@ -285,16 +295,16 @@ public partial class ProgrammingCommunityContext : DbContext
 
             entity.HasOne(d => d.FromRound).WithMany(p => p.RoundQualificationCriterionFromRounds)
                 .HasForeignKey(d => d.FromRoundId)
-                .HasConstraintName("FK__RoundQual__from___7E37BEF6");
+                .HasConstraintName("FK__RoundQual__from___00200768");
 
             entity.HasOne(d => d.ToRound).WithMany(p => p.RoundQualificationCriterionToRounds)
                 .HasForeignKey(d => d.ToRoundId)
-                .HasConstraintName("FK__RoundQual__to_ro__7F2BE32F");
+                .HasConstraintName("FK__RoundQual__to_ro__01142BA1");
         });
 
         modelBuilder.Entity<RoundResult>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__RoundRes__3213E83F53528C29");
+            entity.HasKey(e => e.Id).HasName("PK__RoundRes__3213E83F11E20A56");
 
             entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.CompetitionId).HasColumnName("competition_id");
@@ -308,20 +318,20 @@ public partial class ProgrammingCommunityContext : DbContext
 
             entity.HasOne(d => d.Competition).WithMany(p => p.RoundResults)
                 .HasForeignKey(d => d.CompetitionId)
-                .HasConstraintName("FK__RoundResu__compe__09A971A2");
+                .HasConstraintName("FK__RoundResu__compe__0D7A0286");
 
             entity.HasOne(d => d.CompetitionRound).WithMany(p => p.RoundResults)
                 .HasForeignKey(d => d.CompetitionRoundId)
-                .HasConstraintName("FK__RoundResu__compe__07C12930");
+                .HasConstraintName("FK__RoundResu__compe__0B91BA14");
 
             entity.HasOne(d => d.Team).WithMany(p => p.RoundResults)
                 .HasForeignKey(d => d.TeamId)
-                .HasConstraintName("FK__RoundResu__team___08B54D69");
+                .HasConstraintName("FK__RoundResu__team___0C85DE4D");
         });
 
         modelBuilder.Entity<StudentSubject>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__StudentS__3213E83F2A17C1DD");
+            entity.HasKey(e => e.Id).HasName("PK__StudentS__3213E83F0659E09D");
 
             entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.IsDeleted)
@@ -344,7 +354,7 @@ public partial class ProgrammingCommunityContext : DbContext
 
         modelBuilder.Entity<Subject>(entity =>
         {
-            entity.HasKey(e => e.Code).HasName("PK__Subjects__357D4CF8A570BE0F");
+            entity.HasKey(e => e.Code).HasName("PK__Subjects__357D4CF8764CE0D5");
 
             entity.Property(e => e.Code)
                 .HasMaxLength(255)
@@ -360,7 +370,7 @@ public partial class ProgrammingCommunityContext : DbContext
 
         modelBuilder.Entity<SubmittedTask>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Submitte__3213E83F4C25006C");
+            entity.HasKey(e => e.Id).HasName("PK__Submitte__3213E83F9E7270F8");
 
             entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.Answer)
@@ -369,24 +379,29 @@ public partial class ProgrammingCommunityContext : DbContext
             entity.Property(e => e.IsDeleted)
                 .HasDefaultValue(false)
                 .HasColumnName("isDeleted");
+            entity.Property(e => e.QuestionId).HasColumnName("question_id");
             entity.Property(e => e.Score).HasColumnName("score");
             entity.Property(e => e.SubmissionDate).HasColumnName("submission_date");
             entity.Property(e => e.SubmissionTime).HasColumnName("submission_time");
-            entity.Property(e => e.TaskquestionId).HasColumnName("taskquestion_id");
+            entity.Property(e => e.TaskId).HasColumnName("task_id");
             entity.Property(e => e.UserId).HasColumnName("user_id");
 
-            entity.HasOne(d => d.Taskquestion).WithMany(p => p.SubmittedTasks)
-                .HasForeignKey(d => d.TaskquestionId)
-                .HasConstraintName("FK__Submitted__taskq__68487DD7");
+            entity.HasOne(d => d.Question).WithMany(p => p.SubmittedTasks)
+                .HasForeignKey(d => d.QuestionId)
+                .HasConstraintName("FK__Submitted__quest__6A30C649");
+
+            entity.HasOne(d => d.Task).WithMany(p => p.SubmittedTasks)
+                .HasForeignKey(d => d.TaskId)
+                .HasConstraintName("FK__Submitted__task___693CA210");
 
             entity.HasOne(d => d.User).WithMany(p => p.SubmittedTasks)
                 .HasForeignKey(d => d.UserId)
-                .HasConstraintName("FK__Submitted__user___693CA210");
+                .HasConstraintName("FK__Submitted__user___6B24EA82");
         });
 
         modelBuilder.Entity<Task>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Tasks__3213E83F7E5DFC9F");
+            entity.HasKey(e => e.Id).HasName("PK__Tasks__3213E83FB83929C4");
 
             entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.EndDate).HasColumnName("endDate");
@@ -396,11 +411,16 @@ public partial class ProgrammingCommunityContext : DbContext
             entity.Property(e => e.MaxLevel).HasColumnName("max_level");
             entity.Property(e => e.MinLevel).HasColumnName("min_level");
             entity.Property(e => e.StartDate).HasColumnName("startDate");
+            entity.Property(e => e.UserId).HasColumnName("user_id");
+
+            entity.HasOne(d => d.User).WithMany(p => p.Tasks)
+                .HasForeignKey(d => d.UserId)
+                .HasConstraintName("FK__Tasks__user_id__60A75C0F");
         });
 
         modelBuilder.Entity<TaskQuestion>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__TaskQues__3213E83FBA7ACE16");
+            entity.HasKey(e => e.Id).HasName("PK__TaskQues__3213E83F08974904");
 
             entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.IsDeleted)
@@ -411,16 +431,16 @@ public partial class ProgrammingCommunityContext : DbContext
 
             entity.HasOne(d => d.Question).WithMany(p => p.TaskQuestions)
                 .HasForeignKey(d => d.QuestionId)
-                .HasConstraintName("FK__TaskQuest__quest__6477ECF3");
+                .HasConstraintName("FK__TaskQuest__quest__656C112C");
 
             entity.HasOne(d => d.Task).WithMany(p => p.TaskQuestions)
                 .HasForeignKey(d => d.TaskId)
-                .HasConstraintName("FK__TaskQuest__task___6383C8BA");
+                .HasConstraintName("FK__TaskQuest__task___6477ECF3");
         });
 
         modelBuilder.Entity<Team>(entity =>
         {
-            entity.HasKey(e => e.TeamId).HasName("PK__Teams__F82DEDBCC42B42C0");
+            entity.HasKey(e => e.TeamId).HasName("PK__Teams__F82DEDBC642F4595");
 
             entity.Property(e => e.TeamId).HasColumnName("team_id");
             entity.Property(e => e.IsDeleted)
@@ -434,7 +454,7 @@ public partial class ProgrammingCommunityContext : DbContext
 
         modelBuilder.Entity<TeamMember>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__TeamMemb__3213E83F5BCAF99F");
+            entity.HasKey(e => e.Id).HasName("PK__TeamMemb__3213E83FC1B210A6");
 
             entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.IsDeleted)
@@ -454,7 +474,7 @@ public partial class ProgrammingCommunityContext : DbContext
 
         modelBuilder.Entity<Topic>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Topics__3213E83F99EC93DF");
+            entity.HasKey(e => e.Id).HasName("PK__Topics__3213E83F51027A3D");
 
             entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.IsDeleted)
@@ -476,7 +496,7 @@ public partial class ProgrammingCommunityContext : DbContext
 
         modelBuilder.Entity<User>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Users__3213E83F68885B5B");
+            entity.HasKey(e => e.Id).HasName("PK__Users__3213E83FD2601F6E");
 
             entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.Email)
@@ -514,7 +534,7 @@ public partial class ProgrammingCommunityContext : DbContext
 
         modelBuilder.Entity<WinnerBoard>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__WinnerBo__3213E83F0BA43E97");
+            entity.HasKey(e => e.Id).HasName("PK__WinnerBo__3213E83FDF02F9AC");
 
             entity.ToTable("WinnerBoard");
 
@@ -525,11 +545,11 @@ public partial class ProgrammingCommunityContext : DbContext
 
             entity.HasOne(d => d.Competition).WithMany(p => p.WinnerBoards)
                 .HasForeignKey(d => d.CompetitionId)
-                .HasConstraintName("FK__WinnerBoa__compe__0D7A0286");
+                .HasConstraintName("FK__WinnerBoa__compe__114A936A");
 
             entity.HasOne(d => d.Team).WithMany(p => p.WinnerBoards)
                 .HasForeignKey(d => d.TeamId)
-                .HasConstraintName("FK__WinnerBoa__team___0E6E26BF");
+                .HasConstraintName("FK__WinnerBoa__team___123EB7A3");
         });
 
         OnModelCreatingPartial(modelBuilder);

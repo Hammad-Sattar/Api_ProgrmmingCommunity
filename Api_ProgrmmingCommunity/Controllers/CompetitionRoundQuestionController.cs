@@ -16,7 +16,7 @@ namespace Api_ProgrmmingCommunity.Controllers
             _context = context;
             }
 
-        [HttpPost("CreateCompetitionRoundQuestion")]
+        [HttpPost("AddCompetitionRoundQuestion")]
         public IActionResult CreateCompetitionRoundQuestion([FromBody] CompetitionRoundQuestionDTO competitionRoundQuestionDto)
             {
             if (competitionRoundQuestionDto == null)
@@ -34,7 +34,7 @@ namespace Api_ProgrmmingCommunity.Controllers
             _context.CompetitionRoundQuestions.Add(competitionRoundQuestion);
             _context.SaveChanges();
 
-            return CreatedAtAction(nameof(GetCompetitionRoundQuestion), new { id = competitionRoundQuestion.Id }, competitionRoundQuestion);
+            return Ok("Question Added To Round");
             }
 
         [HttpGet("GetCompetitionRoundQuestion")]
