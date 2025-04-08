@@ -25,11 +25,15 @@ public partial class Question
 
     public bool? IsDeleted { get; set; }
 
+    public virtual ICollection<CompetitionAttemptedQuestion> CompetitionAttemptedQuestions { get; set; } = new List<CompetitionAttemptedQuestion>();
+
     public virtual ICollection<CompetitionRoundQuestion> CompetitionRoundQuestions { get; set; } = new List<CompetitionRoundQuestion>();
 
     public virtual ICollection<QuestionOption> QuestionOptions { get; set; } = new List<QuestionOption>();
 
     public virtual Subject? SubjectCodeNavigation { get; set; }
+
+    public virtual ICollection<SubmittedTask> SubmittedTasks { get; set; } = new List<SubmittedTask>();
 
     public virtual ICollection<TaskQuestion> TaskQuestions { get; set; } = new List<TaskQuestion>();
 

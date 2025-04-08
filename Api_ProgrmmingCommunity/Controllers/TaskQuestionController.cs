@@ -16,7 +16,7 @@ namespace Api_ProgrmmingCommunity.Controllers
             _context = context;
             }
 
-        [HttpPost("CreateTaskQuestion")]
+        [HttpPost("AddTaskQuestion")]
         public IActionResult CreateTaskQuestion([FromBody] TaskQuestionDTO taskQuestionDto)
             {
             if (taskQuestionDto == null)
@@ -34,32 +34,32 @@ namespace Api_ProgrmmingCommunity.Controllers
             _context.TaskQuestions.Add(taskQuestion);
             _context.SaveChanges();
 
-            return CreatedAtAction(nameof(GetTaskQuestion), new { id = taskQuestion.Id }, taskQuestion);
+            return Ok("Question Added To Task");
             }
 
         [HttpGet("GetTaskQuestion")]
         public IActionResult GetTaskQuestion([FromQuery] int? id, [FromQuery] int? taskId, [FromQuery] int? questionId)
             {
-            var taskQuestion = _context.TaskQuestions
-                .FirstOrDefault(tq =>
+            var taskQuestions = _context.TaskQuestions
+                .Where(tq =>
                     (id != null && tq.Id == id) ||
                     (taskId != null && tq.TaskId == taskId) ||
-                    (questionId != null && tq.QuestionId == questionId));
+                    (questionId != null && tq.QuestionId == questionId))
+                .ToList();
 
-            if (taskQuestion == null)
+            if (!taskQuestions.Any()) 
                 {
                 return NotFound("Task question not found.");
                 }
 
-            var taskQuestionDto = new TaskQuestionDTO
+            var taskQuestionDtos = taskQuestions.Select(tq => new TaskQuestionDTO
                 {
-                Id = taskQuestion.Id,
-                TaskId = taskQuestion.TaskId,
-                QuestionId = taskQuestion.QuestionId,
-               
-                };
+                Id = tq.Id,
+                TaskId = tq.TaskId,
+                QuestionId = tq.QuestionId,
+                }).ToList();
 
-            return Ok(taskQuestionDto);
+            return Ok(taskQuestionDtos); 
             }
 
         [HttpPut("UpdateTaskQuestion")]

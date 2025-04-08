@@ -41,5 +41,7 @@ public partial class User
 
     public virtual ICollection<SubmittedTask> SubmittedTasks { get; set; } = new List<SubmittedTask>();
 
+    public virtual ICollection<Task> Tasks { get; set; } = new List<Task>();
+
     public virtual ICollection<TeamMember> TeamMembers { get; set; } = new List<TeamMember>();
 }

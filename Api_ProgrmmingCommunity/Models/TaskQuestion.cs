@@ -15,7 +15,5 @@ public partial class TaskQuestion
 
     public virtual Question? Question { get; set; }
 
-    public virtual ICollection<SubmittedTask> SubmittedTasks { get; set; } = new List<SubmittedTask>();
-
     public virtual Task? Task { get; set; }
 }

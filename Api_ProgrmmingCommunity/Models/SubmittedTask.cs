@@ -7,7 +7,9 @@ public partial class SubmittedTask
 {
     public int Id { get; set; }
 
-    public int? TaskquestionId { get; set; }
+    public int? TaskId { get; set; }
+
+    public int? QuestionId { get; set; }
 
     public int? UserId { get; set; }
 
@@ -21,7 +23,9 @@ public partial class SubmittedTask
 
     public bool? IsDeleted { get; set; }
 
-    public virtual TaskQuestion? Taskquestion { get; set; }
+    public virtual Question? Question { get; set; }
+
+    public virtual Task? Task { get; set; }
 
     public virtual User? User { get; set; }
 }
