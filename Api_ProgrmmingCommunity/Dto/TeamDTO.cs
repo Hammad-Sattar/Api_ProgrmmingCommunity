@@ -6,13 +6,6 @@
 
         public string? TeamName { get; set; }
 
-        public int? Member1Id { get; set; }
-
-        public int? Member2Id { get; set; }
-
-        public int? Member3Id { get; set; }
-
-       
 
         }
     }

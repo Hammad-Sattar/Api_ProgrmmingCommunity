@@ -34,7 +34,7 @@ namespace Api_ProgrmmingCommunity.Controllers
             _context.CompetitionTeams.Add(competitionTeam);
             _context.SaveChanges();
 
-            return CreatedAtAction(nameof(GetCompetitionTeam), new { id = competitionTeam.Id }, competitionTeam);
+            return Ok("Team Registerd to competition Successfully");
             }
 
         [HttpGet("GetCompetitionTeam")]

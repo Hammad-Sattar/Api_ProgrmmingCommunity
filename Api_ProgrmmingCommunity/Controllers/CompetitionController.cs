@@ -2,6 +2,7 @@
 using Api_ProgrmmingCommunity.Models;
 using System.Linq;
 using Api_ProgrmmingCommunity.Dto;
+using Microsoft.EntityFrameworkCore;
 
 namespace Api_ProgrmmingCommunity.Controllers
     {
@@ -42,6 +43,64 @@ namespace Api_ProgrmmingCommunity.Controllers
 
             return CreatedAtAction(nameof(GetCompetition), new { id = competition.CompetitionId });
             }
+
+        [HttpGet("GetUnregisterdCompetition/{userId}")]
+        public async Task<IActionResult> GetUnregisterdCompetition(int userId)
+            {
+            var competitions = await _context.Competitions
+                .Where(c => c.IsDeleted == false)
+                .Where(c => !_context.CompetitionTeams
+                    .Join(_context.Teams, ct => ct.TeamId, t => t.TeamId, (ct, t) => new { ct, t })
+                    .Join(_context.TeamMembers, joined => joined.t.TeamId, tm => tm.TeamId, (joined, tm) => new { joined, tm })
+                    .Any(x => x.tm.UserId == userId && x.joined.ct.CompetitionId == c.CompetitionId))
+                .Select(c => new
+                    {
+                    c.CompetitionId,
+                    c.Title,
+                    c.Year,
+                    c.MinLevel,
+                    c.MaxLevel
+                    })
+                .ToListAsync(); // Use ToListAsync() instead of ToList()
+
+            // If no competitions found
+            if (competitions == null || !competitions.Any())
+                {
+                return Ok(new { message = "User has no unregistered competitions.", data = competitions });
+                }
+
+            return Ok(new { message = "Competitions retrieved successfully.", data = competitions });
+            }
+
+
+        [HttpGet("GetRegisteredCompetitions/{userId}")]
+        public async Task<IActionResult> GetRegisteredCompetitions(int userId)
+            {
+            var competitions = await _context.Competitions
+                .Where(c => c.IsDeleted == false)
+                .Join(_context.CompetitionTeams, c => c.CompetitionId, ct => ct.CompetitionId, (c, ct) => new { c, ct })
+                .Join(_context.Teams, joined => joined.ct.TeamId, t => t.TeamId, (joined, t) => new { joined, t })
+                .Join(_context.TeamMembers, joined2 => joined2.t.TeamId, tm => tm.TeamId, (joined2, tm) => new { joined2, tm })
+                .Where(x => x.tm.UserId == userId)
+                .Select(x => new
+                    {
+                    x.joined2.joined.c.CompetitionId,
+                    x.joined2.joined.c.Title,
+                    x.joined2.joined.c.Year,
+                    x.joined2.joined.c.MinLevel,
+                    x.joined2.joined.c.MaxLevel
+                    })
+                .Distinct()
+                .ToListAsync();
+
+            if (!competitions.Any())
+                {
+                return Ok(new { message = "User is not registered in any competition.", data = competitions });
+                }
+
+            return Ok(new { message = "Registered competitions retrieved successfully.", data = competitions });
+            }
+
 
         [HttpGet("GetCompetition")]
         public IActionResult GetCompetition([FromQuery] int competitionId)
