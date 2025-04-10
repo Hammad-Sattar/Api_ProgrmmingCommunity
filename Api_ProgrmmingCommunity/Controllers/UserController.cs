@@ -184,7 +184,29 @@ namespace Api_ProgrmmingCommunity.Controllers
             return Ok(users);
             }
 
-      
+        [HttpGet("GetAllStudents")]
+        public IActionResult GetAllStudents()
+            {
+            var users = _context.Users
+                .Where(user => user.IsDeleted == false && user.Role == 3)  
+                .Select(user => new UserDTO
+                    {
+                    Id = user.Id,
+                    Password = user.Password,
+                    Role = user.Role,
+                    RegNum = user.RegNum,
+                    Section = user.Section,
+                    Semester = user.Semester,
+                    Email = user.Email,
+                    Phonenum = user.Phonenum,
+                    Firstname = user.Firstname,
+                    Lastname = user.Lastname,
+                    })
+                .ToList();
+
+            return Ok(users);
+            }
+
         [HttpDelete("DeleteUser")]
         public IActionResult DeleteUser([FromQuery] string? email, [FromQuery] string? empId, [FromQuery] string? regNum)
             {
