@@ -62,6 +62,37 @@ namespace Api_ProgrmmingCommunity.Controllers
             return Ok(taskQuestionDtos); 
             }
 
+
+        [HttpGet("GetAllTaskQuestions")]
+        public IActionResult GetAllTaskQuestions()
+            {
+            try
+                {
+                // Fetch all TaskQuestions from the database
+                var taskQuestions = _context.TaskQuestions.ToList();
+
+                if (!taskQuestions.Any())
+                    {
+                    return NotFound("No task questions found.");
+                    }
+
+                // Map to DTO for response
+                var taskQuestionDtos = taskQuestions.Select(tq => new TaskQuestionDTO
+                    {
+                    Id = tq.Id,
+                    TaskId = tq.TaskId,
+                    QuestionId = tq.QuestionId,
+                    }).ToList();
+
+                return Ok(taskQuestionDtos);
+                }
+            catch (Exception ex)
+                {
+                return StatusCode(500, "Internal server error: " + ex.Message);
+                }
+            }
+
+
         [HttpPut("UpdateTaskQuestion")]
         public IActionResult UpdateTaskQuestion(int id, [FromBody] TaskQuestionDTO taskQuestionDto)
             {

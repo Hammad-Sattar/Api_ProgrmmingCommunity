@@ -19,6 +19,8 @@ public partial class Task
 
     public bool? IsDeleted { get; set; }
 
+    public bool? Attempt { get; set; }
+
     public virtual ICollection<SubmittedTask> SubmittedTasks { get; set; } = new List<SubmittedTask>();
 
     public virtual ICollection<TaskQuestion> TaskQuestions { get; set; } = new List<TaskQuestion>();

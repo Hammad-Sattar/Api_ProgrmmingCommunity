@@ -5,7 +5,11 @@
 
         public int Id { get; set; }
 
-        public int? CompetitionRoundQuestionId { get; set; }
+        public int? CompetitionId { get; set; }
+
+        public int? CompetitionRoundId { get; set; }
+
+        public int? QuestionId { get; set; }
 
         public int? TeamId { get; set; }
 
@@ -13,7 +17,7 @@
 
         public int? Score { get; set; }
 
-        public TimeOnly? SubmissionTime { get; set; } = TimeOnly.FromDateTime(DateTime.Now);
+        public DateTime? SubmissionTime { get; set; }
 
 
 

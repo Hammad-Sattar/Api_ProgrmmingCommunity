@@ -1,6 +1,7 @@
 ﻿using Api_ProgrmmingCommunity.Dto;
 using Api_ProgrmmingCommunity.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace YourNamespace.Controllers
     {
@@ -34,26 +35,29 @@ namespace YourNamespace.Controllers
             return Ok(rounds);
             }
 
-        // GET: api/CompetitionRound/GetById/{id}
-        [HttpGet("GetCompetitonRoundById/{id}")]
-        public async Task<ActionResult<CompetitionRoundDTO>> GetById(int id)
+        // GET: api/CompetitionRound/GetAllRoundsByCompetitionId/{competitionId}
+        [HttpGet("GetAllRoundsByCompetitionId/{competitionId}")]
+        public async Task<ActionResult<IEnumerable<CompetitionRoundDTO>>> GetAllRoundsByCompetitionId(int competitionId)
             {
-            var round = await _context.CompetitionRounds.FindAsync(id);
+            var rounds = await _context.CompetitionRounds
+                .Where(r => r.CompetitionId == competitionId && r.IsDeleted == false)
+                .OrderBy(r => r.RoundNumber)
+                .Select(r => new CompetitionRoundDTO
+                    {
+                    Id = r.Id,
+                    CompetitionId = r.CompetitionId,
+                    RoundNumber = r.RoundNumber,
+                    RoundType = r.RoundType,
+                    Date = r.Date
+                    })
+                .ToListAsync();
 
-            if (round == null)
+            if (rounds == null || !rounds.Any())
                 {
-                return NotFound();
+                return NotFound("No rounds found for this competition.");
                 }
 
-            return Ok(new CompetitionRoundDTO
-                {
-                Id = round.Id,
-                CompetitionId = round.CompetitionId,
-                RoundNumber = round.RoundNumber,
-                RoundType = round.RoundType,
-                Date = round.Date,
-              
-                });
+            return Ok(rounds);
             }
 
         // POST: api/CompetitionRound/Add

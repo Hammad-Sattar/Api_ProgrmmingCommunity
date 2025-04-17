@@ -184,6 +184,38 @@ namespace Api_ProgrmmingCommunity.Controllers
             return Ok(users);
             }
 
+        [HttpGet("GetAllStudentsWithoutTeam")]
+        public IActionResult GetAllStudentsWithoutTeam()
+            {
+            // Get user IDs that are already in teams
+            var usersInTeams = _context.TeamMembers
+                .Where(tm => tm.IsDeleted == false)
+                .Select(tm => tm.UserId)
+                .ToList();
+
+            // Get all students (role = 3) who are not in that list
+            var studentsWithoutTeam = _context.Users
+                .Where(user => user.IsDeleted == false
+                            && user.Role == 3
+                            && !usersInTeams.Contains(user.Id))
+                .Select(user => new UserDTO
+                    {
+                    Id = user.Id,
+                    Password = user.Password,
+                    Role = user.Role,
+                    RegNum = user.RegNum,
+                    Section = user.Section,
+                    Semester = user.Semester,
+                    Email = user.Email,
+                    Phonenum = user.Phonenum,
+                    Firstname = user.Firstname,
+                    Lastname = user.Lastname,
+                    })
+                .ToList();
+
+            return Ok(studentsWithoutTeam);
+            }
+
         [HttpGet("GetAllStudents")]
         public IActionResult GetAllStudents()
             {

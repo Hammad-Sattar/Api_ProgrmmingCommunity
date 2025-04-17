@@ -19,7 +19,7 @@ public partial class CompetitionAttemptedQuestion
 
     public int? Score { get; set; }
 
-    public TimeOnly? SubmissionTime { get; set; }
+    public DateTime? SubmissionTime { get; set; }
 
     public bool? IsDeleted { get; set; }
 

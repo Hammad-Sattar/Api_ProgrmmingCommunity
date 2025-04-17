@@ -2,6 +2,7 @@
 using Api_ProgrmmingCommunity.Models;
 using System.Linq;
 using Api_ProgrmmingCommunity.Dto;
+using Microsoft.EntityFrameworkCore;
 
 namespace Api_ProgrmmingCommunity.Controllers
     {
@@ -66,7 +67,7 @@ namespace Api_ProgrmmingCommunity.Controllers
         public IActionResult GetAllTasks()
             {
             var tasks = _context.Tasks
-                .Where(t => t.IsDeleted == false)
+                .Where(t => t.IsDeleted == false  && t.Attempt ==false)
                 .Select(t => new TaskDTO
                     {
                     Id = t.Id,
@@ -81,6 +82,24 @@ namespace Api_ProgrmmingCommunity.Controllers
 
             return Ok(tasks);
             }
+
+        [HttpPut("Attempt/{taskId}")]
+        public async Task<IActionResult> MarkTaskAsAttempted(int taskId)
+            {
+            var task = await _context.Tasks.FirstOrDefaultAsync(t => t.Id == taskId && t.IsDeleted == false);
+
+            if (task == null)
+                {
+                return NotFound("Task not found or task is deleted.");
+                }
+
+            task.Attempt = true;
+
+            await _context.SaveChangesAsync();
+
+            return Ok(new { message = "Task marked as attempted.", taskId = taskId });
+            }
+
         [HttpGet("GetTaskQuestionCount/{taskId}")]
         public IActionResult GetTaskQuestionCount(int taskId)
             {
