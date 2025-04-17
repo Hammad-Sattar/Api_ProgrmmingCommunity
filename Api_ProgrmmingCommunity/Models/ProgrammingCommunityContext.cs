@@ -105,7 +105,9 @@ public partial class ProgrammingCommunityContext : DbContext
                 .HasColumnName("isDeleted");
             entity.Property(e => e.QuestionId).HasColumnName("question_id");
             entity.Property(e => e.Score).HasColumnName("score");
-            entity.Property(e => e.SubmissionTime).HasColumnName("submission_time");
+            entity.Property(e => e.SubmissionTime)
+                .HasColumnType("datetime")
+                .HasColumnName("submission_time");
             entity.Property(e => e.TeamId).HasColumnName("team_id");
 
             entity.HasOne(d => d.Competition).WithMany(p => p.CompetitionAttemptedQuestions)
@@ -404,6 +406,9 @@ public partial class ProgrammingCommunityContext : DbContext
             entity.HasKey(e => e.Id).HasName("PK__Tasks__3213E83FB83929C4");
 
             entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.Attempt)
+                .HasDefaultValue(false)
+                .HasColumnName("attempt");
             entity.Property(e => e.EndDate).HasColumnName("endDate");
             entity.Property(e => e.IsDeleted)
                 .HasDefaultValue(false)

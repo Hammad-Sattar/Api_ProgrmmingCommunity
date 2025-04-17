@@ -1,117 +1,123 @@
-﻿//using Api_ProgrmmingCommunity.Models;
-//using Api_ProgrmmingCommunity.Dto;
-//using Microsoft.AspNetCore.Mvc;
-//using System.Linq;
+﻿using Api_ProgrmmingCommunity.Dto;
+using Api_ProgrmmingCommunity.Models;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
-//namespace Api_ProgrmmingCommunity.Controllers
-//    {
-//    [Route("api/[controller]")]
-//    [ApiController]
-//    public class CompetitionAttemptedQuestionController : ControllerBase
-//        {
-//        private readonly ProgrammingCommunityContext _context;
+namespace Api_ProgrmmingCommunity.Controllers
+    {
+    [Route("api/[controller]")]
+    [ApiController]
+    public class CompetitionAttemptedQuestionController : ControllerBase
+        {
+        private readonly ProgrammingCommunityContext _context;
 
-//        public CompetitionAttemptedQuestionController(ProgrammingCommunityContext context)
-//            {
-//            _context = context;
-//            }
+        public CompetitionAttemptedQuestionController(ProgrammingCommunityContext context)
+            {
+            _context = context;
+            }
 
-//        [HttpPost("CreateCompetitionAttemptedQuestion")]
-//        public IActionResult CreateCompetitionAttemptedQuestion([FromBody] CompetitionAttemptedQuestionDTO competitionAttemptedQuestionDto)
-//            {
-//            if (competitionAttemptedQuestionDto == null)
-//                {
-//                return BadRequest("Competition attempted question data is null.");
-//                }
+        [HttpGet("GetAllAttemptedCompetitionQuestions")]
+        public async Task<ActionResult<IEnumerable<CompetitionAttemptedQuestionDTO>>> GetAll()
+            {
+            var items = await _context.CompetitionAttemptedQuestions
+                .Where(x => x.IsDeleted != true)
+                .Select(x => new CompetitionAttemptedQuestionDTO
+                    {
+                    Id = x.Id,
+                    CompetitionId = x.CompetitionId,
+                    CompetitionRoundId = x.CompetitionRoundId,
+                    QuestionId = x.QuestionId,
+                    TeamId = x.TeamId,
+                    Answer = x.Answer,
+                    Score = x.Score,
+                    SubmissionTime = x.SubmissionTime
+                    })
+                .ToListAsync();
 
-//            var competitionAttemptedQuestion = new CompetitionAttemptedQuestion
-//                {
-//                CompetitionRoundQuestionId = competitionAttemptedQuestionDto.CompetitionRoundQuestionId,
-//                TeamId = competitionAttemptedQuestionDto.TeamId,
-//                Answer = competitionAttemptedQuestionDto.Answer,
-//                Score = competitionAttemptedQuestionDto.Score,
-//                SubmissionTime = competitionAttemptedQuestionDto.SubmissionTime,
-                
-//                };
+            return Ok(items);
+            }
 
-//            _context.CompetitionAttemptedQuestions.Add(competitionAttemptedQuestion);
-//            _context.SaveChanges();
+        [HttpGet("{id}")]
+        public async Task<ActionResult<CompetitionAttemptedQuestionDTO>> GetById(int id)
+            {
+            var x = await _context.CompetitionAttemptedQuestions.FindAsync(id);
 
-//            return CreatedAtAction(nameof(GetCompetitionAttemptedQuestion), new { id = competitionAttemptedQuestion.Id }, competitionAttemptedQuestion);
-//            }
+            if (x == null || x.IsDeleted == true)
+                return NotFound();
 
-//        [HttpGet("GetCompetitionAttemptedQuestion")]
-//        public IActionResult GetCompetitionAttemptedQuestion([FromQuery] int? id, [FromQuery] int? competitionRoundQuestionId, [FromQuery] int? teamId)
-//            {
-//            var competitionAttemptedQuestions = _context.CompetitionAttemptedQuestions
-//                .Where(caq =>
-//                    (id != null && caq.Id == id) ||
-//                    (competitionRoundQuestionId != null && caq.CompetitionRoundQuestionId == competitionRoundQuestionId) ||
-//                    (teamId != null && caq.TeamId == teamId))
-//                .ToList();
+            var dto = new CompetitionAttemptedQuestionDTO
+                {
+                Id = x.Id,
+                CompetitionId = x.CompetitionId,
+                CompetitionRoundId = x.CompetitionRoundId,
+                QuestionId = x.QuestionId,
+                TeamId = x.TeamId,
+                Answer = x.Answer,
+                Score = x.Score,
+                SubmissionTime = x.SubmissionTime
+                };
 
-//            if (competitionAttemptedQuestions == null || !competitionAttemptedQuestions.Any())
-//                {
-//                return NotFound("Competition attempted questions not found.");
-//                }
+            return Ok(dto);
+            }
 
-//            var competitionAttemptedQuestionDtos = competitionAttemptedQuestions
-//                .Select(caq => new CompetitionAttemptedQuestionDTO
-//                    {
-//                    Id = caq.Id,
-//                    CompetitionRoundQuestionId = caq.CompetitionRoundQuestionId,
-//                    TeamId = caq.TeamId,
-//                    Answer = caq.Answer,
-//                    Score = caq.Score,
-//                    SubmissionTime = caq.SubmissionTime,
-//                    })
-//                .ToList();
+        [HttpPost("AddCompetitionAttemptedQuestion")]
+       
+        public async Task<ActionResult> AddCompetitionAttemptedQuestions(List<CompetitionAttemptedQuestionDTO> dtoList)
+            {
+            // Convert the list of DTOs to a list of entities
+            var entities = dtoList.Select(dto => new CompetitionAttemptedQuestion
+                {
+                CompetitionId = dto.CompetitionId,
+                CompetitionRoundId = dto.CompetitionRoundId,
+                QuestionId = dto.QuestionId,
+                TeamId = dto.TeamId,
+                Answer = dto.Answer,
+                Score = dto.Score,
+                SubmissionTime = dto.SubmissionTime
+                }).ToList();
 
-//            return Ok(competitionAttemptedQuestionDtos);
-//            }
+            // Add all entities to the DB in one batch
+            _context.CompetitionAttemptedQuestions.AddRange(entities);
+            await _context.SaveChangesAsync();
 
+            return Ok("Round Questions Attempted successfully");
+            }
 
-//        [HttpPut("UpdateCompetitionAttemptedQuestion")]
-//        public IActionResult UpdateCompetitionAttemptedQuestion(int id, [FromBody] CompetitionAttemptedQuestionDTO competitionAttemptedQuestionDto)
-//            {
-//            var competitionAttemptedQuestion = _context.CompetitionAttemptedQuestions.FirstOrDefault(caq => caq.Id == id);
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Update(int id, CompetitionAttemptedQuestionDTO dto)
+            {
+            var x = await _context.CompetitionAttemptedQuestions.FindAsync(id);
 
-//            if (competitionAttemptedQuestion == null)
-//                {
-//                return NotFound("Competition attempted question not found.");
-//                }
+            if (x == null || x.IsDeleted == true)
+                return NotFound();
 
-//            competitionAttemptedQuestion.CompetitionRoundQuestionId = competitionAttemptedQuestionDto.CompetitionRoundQuestionId;
-//            competitionAttemptedQuestion.TeamId = competitionAttemptedQuestionDto.TeamId;
-//            competitionAttemptedQuestion.Answer = competitionAttemptedQuestionDto.Answer;
-//            competitionAttemptedQuestion.Score = competitionAttemptedQuestionDto.Score;
-//            competitionAttemptedQuestion.SubmissionTime = competitionAttemptedQuestionDto.SubmissionTime;
+            x.CompetitionId = dto.CompetitionId;
+            x.CompetitionRoundId = dto.CompetitionRoundId;
+            x.QuestionId = dto.QuestionId;
+            x.TeamId = dto.TeamId;
+            x.Answer = dto.Answer;
+            x.Score = dto.Score;
+            x.SubmissionTime = dto.SubmissionTime;
 
+            _context.Entry(x).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
 
-//            _context.CompetitionAttemptedQuestions.Update(competitionAttemptedQuestion);
-//            _context.SaveChanges();
+            return NoContent();
+            }
 
-//            return NoContent();
-//            }
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(int id)
+            {
+            var x = await _context.CompetitionAttemptedQuestions.FindAsync(id);
 
-//        [HttpDelete("DeleteCompetitionAttemptedQuestion")]
-//        public IActionResult DeleteCompetitionAttemptedQuestion([FromQuery] int? id, [FromQuery] int? competitionRoundQuestionId, [FromQuery] int? teamId)
-//            {
-//            var competitionAttemptedQuestion = _context.CompetitionAttemptedQuestions
-//                .FirstOrDefault(caq =>
-//                    (id != null && caq.Id == id) ||
-//                    (competitionRoundQuestionId != null && caq.CompetitionRoundQuestionId == competitionRoundQuestionId) ||
-//                    (teamId != null && caq.TeamId == teamId));
+            if (x == null || x.IsDeleted == true)
+                return NotFound();
 
-//            if (competitionAttemptedQuestion == null)
-//                {
-//                return NotFound("Competition attempted question not found.");
-//                }
+            x.IsDeleted = true;
+            _context.Entry(x).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
 
-//            _context.CompetitionAttemptedQuestions.Remove(competitionAttemptedQuestion);
-//            _context.SaveChanges();
-
-//            return Ok("Competition attempted question deleted.");
-//            }
-//        }
-//    }
+            return NoContent();
+            }
+        }
+    }

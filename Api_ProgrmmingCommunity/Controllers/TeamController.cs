@@ -52,6 +52,7 @@ namespace Api_ProgrmmingCommunity.Controllers
             return team;
             }
 
+
         // POST: api/team/register
         [HttpPost("register")]
         public async Task<ActionResult<TeamDTO>> RegisterTeam([FromBody] TeamDTO dto)
