@@ -64,7 +64,7 @@ namespace Api_ProgrmmingCommunity.Controllers
        
         public async Task<ActionResult> AddCompetitionAttemptedQuestions(List<CompetitionAttemptedQuestionDTO> dtoList)
             {
-            // Convert the list of DTOs to a list of entities
+           
             var entities = dtoList.Select(dto => new CompetitionAttemptedQuestion
                 {
                 CompetitionId = dto.CompetitionId,
@@ -76,7 +76,7 @@ namespace Api_ProgrmmingCommunity.Controllers
                 SubmissionTime = dto.SubmissionTime
                 }).ToList();
 
-            // Add all entities to the DB in one batch
+            
             _context.CompetitionAttemptedQuestions.AddRange(entities);
             await _context.SaveChangesAsync();
 
