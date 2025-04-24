@@ -41,27 +41,30 @@ namespace Api_ProgrmmingCommunity.Controllers
             return Ok(new { id = task.Id });
             }
 
-        [HttpGet("GetTask")]
-        public IActionResult GetTask([FromQuery] int? id)
+        [HttpGet("GetTasksByUser")]
+        public IActionResult GetTasksByUser([FromQuery] int userId)
             {
-            var task = _context.Tasks.FirstOrDefault(t => t.Id == id && t.IsDeleted == false);
+            var tasks = _context.Tasks
+                .Where(t => t.UserId == userId && t.IsDeleted!=true)
+                .Select(t => new TaskDTO
+                    {
+                    Id = t.Id,
+                    MinLevel = t.MinLevel,
+                    MaxLevel = t.MaxLevel,
+                    StartDate = t.StartDate,
+                    EndDate = t.EndDate,
+                    UserId = t.UserId
+                    })
+                .ToList();
 
-            if (task == null)
+            if (!tasks.Any())
                 {
-                return NotFound("Task not found or is marked as deleted.");
+                return NotFound("No tasks found for the given user or all tasks are marked as deleted.");
                 }
 
-            return Ok(new TaskDTO
-                {
-                Id = task.Id,
-                MinLevel = task.MinLevel,
-                MaxLevel = task.MaxLevel,
-                StartDate = task.StartDate,
-                EndDate = task.EndDate,
-                UserId=task.UserId
-               
-                });
+            return Ok(tasks);
             }
+
 
         [HttpGet("GetAllTasks")]
         public IActionResult GetAllTasks()
