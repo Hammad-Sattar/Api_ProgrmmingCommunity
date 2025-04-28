@@ -60,6 +60,28 @@ namespace Api_ProgrmmingCommunity.Controllers
             return Ok(subjectDto);
             }
 
+        [HttpGet("GetAvailableSubjects")]
+        public IActionResult GetAllSubjects(int userId)
+            {
+           
+            var registeredSubjects = _context.ExpertSubjects
+                .Where(es => es.ExpertId == userId && es.IsDeleted == false)
+                .Select(es => es.SubjectCode)
+                .ToList();
+
+           
+            var subjects = _context.Subjects
+                .Where(s => s.IsDeleted == false && !registeredSubjects.Contains(s.Code))
+                .Select(s => new SubjectDTO
+                    {
+                    Code = s.Code,
+                    Title = s.Title,
+                    }).ToList();
+
+            return Ok(subjects);
+            }
+
+
         [HttpGet("GetAllSubjects")]
         public IActionResult GetAllSubjects()
             {
