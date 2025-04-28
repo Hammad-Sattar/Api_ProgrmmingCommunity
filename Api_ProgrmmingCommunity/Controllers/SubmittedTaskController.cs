@@ -43,26 +43,38 @@ namespace Api_ProgrmmingCommunity.Controllers
             }
 
 
+        [HttpPut("UpdateSubmittedTaskScore")]
+        public IActionResult UpdateSubmittedTaskScore([FromQuery] int id, [FromQuery] int score)
+            {
+            var submittedTask = _context.SubmittedTasks.FirstOrDefault(st => st.Id == id);
+
+            if (submittedTask == null)
+                {
+                return NotFound($"No submitted task found with Id = {id}.");
+                }
+
+            submittedTask.Score = score;
+            _context.SaveChanges();
+
+            return Ok("Score updated successfully.");
+            }
+
+
         [HttpGet("GetSubmittedTask")]
-        public IActionResult GetSubmittedTask([FromQuery] int? id, [FromQuery] int? userId, [FromQuery] int? taskId, [FromQuery] int? questionId)
+        public IActionResult GetSubmittedTask([FromQuery] int? taskId )
             {
             var submittedTasksQuery = _context.SubmittedTasks.AsQueryable();
 
-            // Apply filters based on the provided query parameters
-            if (id != null)
-                submittedTasksQuery = submittedTasksQuery.Where(st => st.Id == id);
-            if (userId != null)
-                submittedTasksQuery = submittedTasksQuery.Where(st => st.UserId == userId);
+           
             if (taskId != null)
                 submittedTasksQuery = submittedTasksQuery.Where(st => st.TaskId == taskId);
-            if (questionId != null)
-                submittedTasksQuery = submittedTasksQuery.Where(st => st.QuestionId == questionId);
+            
 
-            var submittedTasks = submittedTasksQuery.ToList(); // Get the list of matching records
+            var submittedTasks = submittedTasksQuery.ToList(); 
 
             if (submittedTasks.Count == 0)
                 {
-                return NotFound("No submitted tasks found.");
+                return Ok("No submitted tasks found.");
                 }
 
             var submittedTaskDtos = submittedTasks.Select(st => new SubmittedTaskDTO
