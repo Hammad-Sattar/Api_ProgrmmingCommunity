@@ -149,6 +149,34 @@ namespace Api_ProgrmmingCommunity.Controllers
             return Ok(competitions);
             }
 
+
+
+        [HttpGet("GetCompetitionsByExpert/{expertId}")]
+        public async Task<IActionResult> GetCompetitionsByExpert(int expertId)
+            {
+            var competitions = await _context.Competitions
+                .Where(c => c.UserId == expertId && c.IsDeleted==false)
+                .Select(c => new CompetitionDTO
+                    {
+                    CompetitionId = c.CompetitionId,
+                    Title = c.Title,
+                    Year = c.Year,
+                    MinLevel = c.MinLevel,
+                    MaxLevel = c.MaxLevel,
+                    Password = c.Password,
+                    UserId = c.UserId,
+                    Rounds = c.Rounds
+                    })
+                .ToListAsync();
+
+            if (competitions.Count == 0)
+                {
+                return NotFound("No competitions found for this expert.");
+                }
+
+            return Ok(competitions);
+            }
+
         [HttpDelete("DeleteCompetition")]
         public IActionResult DeleteCompetition([FromQuery] int competitionId)
             {
