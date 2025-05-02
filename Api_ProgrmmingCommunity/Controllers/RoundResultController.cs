@@ -17,29 +17,73 @@ namespace Api_ProgrmmingCommunity.Controllers
             _context = context;
             }
 
-        [HttpPost("CreateRoundResult")]
-        public IActionResult CreateRoundResult([FromBody] RoundResultDTO roundResultDto)
+        [HttpPost("insertroundresults")]
+        public async Task<IActionResult> InsertRoundResults()
             {
-            if (roundResultDto == null)
+            try
                 {
-                return BadRequest("Round result data is null.");
+
+                var attemptedQuestions = await _context.CompetitionAttemptedQuestions
+                    .Where(x => x.IsDeleted == false)
+                    .ToListAsync();
+
+                var roundResults = new List<RoundResult>();
+
+
+                var groupedByRoundAndTeam = attemptedQuestions
+                    .GroupBy(x => new { x.CompetitionRoundId, x.TeamId })
+                    .ToList();
+
+                foreach (var group in groupedByRoundAndTeam)
+                    {
+                    int totalScoreForRound = 0;
+                    int teamScore = 0;
+
+                    foreach (var attemptedQuestion in group)
+                        {
+                        int score = attemptedQuestion.Score ?? 0;
+                        teamScore += score;
+                        totalScoreForRound += 10;
+                        }
+
+                    bool alreadyExists = await _context.RoundResults.AnyAsync(r =>
+                        r.CompetitionRoundId == group.Key.CompetitionRoundId &&
+                        r.TeamId == group.Key.TeamId &&
+                        r.IsDeleted == false);
+
+                    if (alreadyExists)
+                        continue;
+
+                    int qualifyingScore = totalScoreForRound / 2;
+                    bool isQualified = teamScore >= qualifyingScore;
+
+                    var roundResult = new RoundResult
+                        {
+                        CompetitionRoundId = group.Key.CompetitionRoundId,
+                        TeamId = group.Key.TeamId,
+                        Score = teamScore,
+                        CompetitionId = group.FirstOrDefault().CompetitionId,
+                        IsQualified = isQualified,
+                        IsDeleted = false
+                        };
+
+                    roundResults.Add(roundResult);
+                    }
+
+
+                // Insert all results into the RoundResults table
+                await _context.RoundResults.AddRangeAsync(roundResults);
+                await _context.SaveChangesAsync();
+
+                return Ok("Round results inserted successfully.");
                 }
-
-            var roundResult = new RoundResult
+            catch (Exception ex)
                 {
-                CompetitionRoundId = roundResultDto.CompetitionRoundId,
-                TeamId = roundResultDto.TeamId,
-                Score = roundResultDto.Score,
-                CompetitionId = roundResultDto.CompetitionId,
-                IsQualified = roundResultDto.IsQualified,
-               
-                };
-
-            _context.RoundResults.Add(roundResult);
-            _context.SaveChanges();
-
-            return CreatedAtAction(nameof(GetRoundResult), new { id = roundResult.Id }, roundResult);
+                return BadRequest($"Error: {ex.Message}");
+                }
             }
+
+
 
         [HttpGet("GetRoundResult")]
         public IActionResult GetRoundResult([FromQuery] int? id, [FromQuery] int? competitionRoundId, [FromQuery] int? teamId, [FromQuery] int? competitionId)
@@ -115,71 +159,7 @@ namespace Api_ProgrmmingCommunity.Controllers
             return Ok("Round result deleted.");
             }
 
-        [HttpPost("insert-round-results")]
-        public async Task<IActionResult> InsertRoundResults()
-            {
-            try
-                {
-                
-                var attemptedQuestions = await _context.CompetitionAttemptedQuestions
-                    .Where(x => x.IsDeleted == false) 
-                    .ToListAsync();
-
-                var roundResults = new List<RoundResult>();
-
-                
-                var groupedByRoundAndTeam = attemptedQuestions
-                    .GroupBy(x => new { x.CompetitionRoundId, x.TeamId })
-                    .ToList();
-
-                foreach (var group in groupedByRoundAndTeam)
-                    {
-                    int totalScoreForRound = 0;
-                    int teamScore = 0;
-
-                    foreach (var attemptedQuestion in group)
-                        {
-                        // Assume each question is worth 10 points, score is already provided in the table
-                        int score = attemptedQuestion.Score ?? 0; // If no score is assigned, it defaults to 0
-
-                       
-                        teamScore += score;
-
-                        // Accumulate the total available score for the round
-                        totalScoreForRound += 10; // Each question gives 10 points
-                        }
-
-                    // Calculate 50% of the total available score
-                    int qualifyingScore = totalScoreForRound / 2;
-
-                    // Check if the team qualifies (score >= 50% of the total available score)
-                    bool isQualified = teamScore >= qualifyingScore;
-
-                    // Create a new round result entry for this team
-                    var roundResult = new RoundResult
-                        {
-                        CompetitionRoundId = group.Key.CompetitionRoundId,
-                        TeamId = group.Key.TeamId,
-                        Score = teamScore,
-                        CompetitionId = group.FirstOrDefault().CompetitionId,
-                        IsQualified = isQualified,
-                        IsDeleted = false
-                        };
-
-                    roundResults.Add(roundResult);
-                    }
-
-                // Insert all results into the RoundResults table
-                await _context.RoundResults.AddRangeAsync(roundResults);
-                await _context.SaveChangesAsync();
-
-                return Ok("Round results inserted successfully.");
-                }
-            catch (Exception ex)
-                {
-                return BadRequest($"Error: {ex.Message}");
-                }
-            }
+        
 
         [HttpGet("GetRoundResults/{roundId}")]
         public async Task<IActionResult> GetRoundResults(int roundId)
@@ -218,6 +198,50 @@ namespace Api_ProgrmmingCommunity.Controllers
             return Ok(distinctResults);
             }
 
+        [HttpPut("UpdateQualification")]
+       
+        public async Task<IActionResult> UpdateQualification([FromBody] QualificationUpdateDTO dto)
+            {
+            try
+                {
+                var roundResults = await _context.RoundResults
+                    .Where(r => r.TeamId == dto.TeamId &&
+                                r.CompetitionRoundId == dto.CompetitionRoundId &&
+                                r.IsDeleted==false)
+                    .ToListAsync();
 
+                if (!roundResults.Any())
+                    return NotFound("No matching round results found.");
+
+                foreach (var result in roundResults)
+                    {
+                    result.IsQualified = dto.IsQualified;
+                    }
+
+                await _context.SaveChangesAsync();
+                return Ok("IsQualified status updated successfully.");
+                }
+            catch (Exception ex)
+                {
+                return BadRequest($"Error: {ex.Message}");
+                }
+            }
+
+        [HttpGet("CheckQualificationStatus/{teamId}/{roundId}")]
+        public IActionResult CheckQualificationStatus(int teamId, int roundId)
+            {
+            var roundResult = _context.RoundResults
+                                       .FirstOrDefault(r => r.TeamId == teamId && r.CompetitionRoundId == roundId);
+
+            if (roundResult == null)
+                {
+                return NotFound(new { message = "Round result not found for the specified team and round." });
+                }
+
+            return Ok(new { isQualified = roundResult.IsQualified });
+            }
         }
+
+
     }
+    
