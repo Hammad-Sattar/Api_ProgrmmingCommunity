@@ -33,6 +33,25 @@ namespace Api_ProgrmmingCommunity.Controllers
                 .ToListAsync();
             }
 
+        [HttpGet("GetTeamIdByUserId/{userId}")]
+        public IActionResult GetTeamIdByUserId(int userId)
+            {
+            var teamId = _context.TeamMembers
+                .Where(tm => tm.UserId == userId && tm.IsDeleted == false)
+                .OrderByDescending(tm => tm.Id)  // Orders by Id descending (most recent)
+                .Select(tm => tm.TeamId)
+                .FirstOrDefault();
+
+            if (teamId == 0)
+                {
+                return NotFound("No team found for this user.");
+                }
+
+            return Ok(new { TeamId = teamId });
+            }
+
+
+
         // GET: api/team/{id}
         [HttpGet("{id}")]
         public async Task<ActionResult<TeamDTO>> GetTeamById(int id)
