@@ -61,7 +61,6 @@ public partial class ProgrammingCommunityContext : DbContext
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
         => optionsBuilder.UseSqlServer("Server=Programmer;Database= ProgrammingCommunity;User=sa;Password=123;TrustServerCertificate=True;");
 
-   
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Competition>(entity =>
@@ -238,6 +237,9 @@ public partial class ProgrammingCommunityContext : DbContext
             entity.Property(e => e.IsDeleted)
                 .HasDefaultValue(false)
                 .HasColumnName("isDeleted");
+            entity.Property(e => e.Marks)
+                .HasDefaultValue(0)
+                .HasColumnName("marks");
             entity.Property(e => e.Repeated).HasColumnName("repeated");
             entity.Property(e => e.SubjectCode)
                 .HasMaxLength(255)

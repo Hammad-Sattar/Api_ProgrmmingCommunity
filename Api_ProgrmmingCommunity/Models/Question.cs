@@ -25,6 +25,8 @@ public partial class Question
 
     public bool? IsDeleted { get; set; }
 
+    public int? Marks { get; set; }
+
     public virtual ICollection<CompetitionAttemptedQuestion> CompetitionAttemptedQuestions { get; set; } = new List<CompetitionAttemptedQuestion>();
 
     public virtual ICollection<CompetitionRoundQuestion> CompetitionRoundQuestions { get; set; } = new List<CompetitionRoundQuestion>();

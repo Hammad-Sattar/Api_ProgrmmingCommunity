@@ -119,5 +119,71 @@ namespace Api_ProgrmmingCommunity.Controllers
 
             return NoContent();
             }
+        [HttpGet("GetAttemptedQuestionsByRound/{roundId}")]
+        [HttpGet]
+        public async Task<IActionResult> GetAttemptedQuestionsByRound(int roundId, int? teamId = null)
+            {
+            var query = _context.CompetitionAttemptedQuestions
+                .Where(a => a.CompetitionRoundId == roundId && a.IsDeleted==false);
+
+            if (teamId.HasValue)
+                {
+                query = query.Where(a => a.TeamId == teamId.Value);
+                }
+
+#pragma warning disable CS8601 // Possible null reference assignment.
+#pragma warning disable CS8629 // Nullable value type may be null.
+            var result = await query
+                .Select(a => new AttemptedQuestionDto
+                    {
+                    Id = a.Id,
+                    QuestionId = (int)a.QuestionId,
+                    QuestionText = _context.Questions
+                       .Where(q => q.Id == a.QuestionId)
+                       .Select(q => q.Text)
+                       .FirstOrDefault(),
+                    Marks = (int)_context.Questions
+                .Where(q => q.Id == a.QuestionId)
+                .Select(q => q.Marks)
+                .FirstOrDefault(),
+
+                    TeamId = (int)a.TeamId,
+                    TeamName = _context.Teams
+                                       .Where(t => t.TeamId == a.TeamId)
+                                       .Select(t => t.TeamName)
+                                       .FirstOrDefault(),
+                    Answer = a.Answer,
+                    Score = a.Score,
+                    SubmissionTime = (DateTime)a.SubmissionTime
+                    })
+                .ToListAsync();
+#pragma warning restore CS8629 // Nullable value type may be null.
+#pragma warning restore CS8601 // Possible null reference assignment.
+
+            return Ok(result);
+            }
+
+
+        [HttpPut("UpdateScore")]
+        public async Task<IActionResult> UpdateScore(int id, int score)
+            {
+            var attemptedQuestion = await _context.CompetitionAttemptedQuestions.FindAsync(id);
+
+            if (attemptedQuestion == null || attemptedQuestion.IsDeleted==true)
+                {
+                return NotFound("Attempted question not found or has been deleted.");
+                }
+
+            attemptedQuestion.Score = score;
+
+            await _context.SaveChangesAsync();
+
+            return Ok(new { message = "Score updated successfully." });
+            }
+
+
+
+
+
         }
     }
