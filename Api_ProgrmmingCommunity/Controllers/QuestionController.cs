@@ -31,6 +31,7 @@ namespace MapProjectApi.Controllers
                     q.UserId,
                     q.Difficulty,
                     q.Text,
+                    q.Marks,
                     q.Type,
                     Options = q.Type == 2
                         ? _context.QuestionOptions.Where(opt => opt.QuestionId == q.Id)
@@ -53,6 +54,7 @@ namespace MapProjectApi.Controllers
                 Difficulty = q.Difficulty,
                 Text = q.Text,
                 Type = q.Type,
+                Marks = q.Marks,
                 Options = q.Options != null ? q.Options.Select(opt => new QuestionOptionDTO
                     {
                     Id = opt.Id,
@@ -79,7 +81,8 @@ namespace MapProjectApi.Controllers
                 UserId = model.UserId,
                 Difficulty = model.Difficulty,
                 Text = model.Text,
-                Type = model.Type
+                Type = model.Type,
+                Marks = model.Marks
                 };
 
             _context.Questions.Add(question);
@@ -115,7 +118,9 @@ namespace MapProjectApi.Controllers
                     UserId = q.UserId,
                     Difficulty = q.Difficulty,
                     Text = q.Text,
-                    Type = q.Type
+                    Type = q.Type,
+                    Marks = q.Marks
+
                     })
                 .ToListAsync();
 
@@ -142,8 +147,9 @@ namespace MapProjectApi.Controllers
                 UserId = question.UserId,
                 Difficulty = question.Difficulty,
                 Text = question.Text,
-                Type = question.Type
-            });
+                Type = question.Type,
+                Marks = question.Marks
+                });
         }
         [HttpPost("PostQuestion")]
         public async Task<ActionResult<QuestionDto>> PostQuestion(QuestionDto questionDto)
@@ -155,7 +161,8 @@ namespace MapProjectApi.Controllers
                 UserId = questionDto.UserId,
                 Difficulty = questionDto.Difficulty,
                 Text = questionDto.Text,
-                Type = questionDto.Type
+                Type = questionDto.Type,
+                Marks = questionDto.Marks
                 };
 
             _context.Questions.Add(question);
@@ -238,6 +245,7 @@ namespace MapProjectApi.Controllers
             question.Difficulty = questionDto.Difficulty ?? question.Difficulty;
             question.Text = questionDto.Text ?? question.Text;
             question.Type = questionDto.Type ?? question.Type;
+            question.Marks = questionDto.Marks ?? question.Marks;
 
             _context.Questions.Update(question);
             await _context.SaveChangesAsync();
@@ -261,6 +269,7 @@ namespace MapProjectApi.Controllers
                     q.UserId,
                     q.Difficulty,
                     q.Type,
+                    q.Marks,
                     Lines = q.Text != null
                         ? q.Text.Split(new[] { "\\n" }, StringSplitOptions.None)
                                 .OrderBy(_ => random.Next())

@@ -7,6 +7,7 @@
     public int? Difficulty { get; set; }
     public string? Text { get; set; }
     public int? Type { get; set; }
+    public int? Marks { get; set; }
     public List<QuestionOptionDTOVM> Options { get; set; }
     }
 

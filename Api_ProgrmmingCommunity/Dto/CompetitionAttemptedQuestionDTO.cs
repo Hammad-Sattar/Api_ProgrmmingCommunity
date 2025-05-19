@@ -23,4 +23,19 @@
 
 
         }
+
+
+    public class AttemptedQuestionDto
+        {
+        public int Id { get; set; }
+        public int QuestionId { get; set; }
+        public string QuestionText { get; set; }
+        public int TeamId { get; set; }
+        public string TeamName { get; set; }
+        public string Answer { get; set; }
+        public int? Score { get; set; }
+        public int Marks { get; set; }
+        public DateTime SubmissionTime { get; set; }
+        }
+
     }

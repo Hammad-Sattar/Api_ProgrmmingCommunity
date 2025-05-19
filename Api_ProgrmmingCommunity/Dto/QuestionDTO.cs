@@ -11,6 +11,7 @@ namespace MapProjectApi.Models.DTOs
         public int? Difficulty { get; set; }
         public string? Text { get; set; }
         public int? Type { get; set; }
+        public int? Marks { get; set; }
         }
     public class QuestionDtoList
         {
@@ -21,7 +22,7 @@ namespace MapProjectApi.Models.DTOs
         public int? Difficulty { get; set; }
         public string? Text { get; set; }
         public int? Type { get; set; }
-
+        public int? Marks { get; set; }
         public List<QuestionOptionDTO> Options { get; set; }
         }
     }
