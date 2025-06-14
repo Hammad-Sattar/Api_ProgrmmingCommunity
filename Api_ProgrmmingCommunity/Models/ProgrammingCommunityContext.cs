@@ -15,6 +15,8 @@ public partial class ProgrammingCommunityContext : DbContext
     {
     }
 
+    public virtual DbSet<BuzzerPressLog> BuzzerPressLogs { get; set; }
+
     public virtual DbSet<Competition> Competitions { get; set; }
 
     public virtual DbSet<CompetitionAttemptedQuestion> CompetitionAttemptedQuestions { get; set; }
@@ -63,6 +65,18 @@ public partial class ProgrammingCommunityContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.Entity<BuzzerPressLog>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__BuzzerPr__3214EC0771930F9C");
+
+            entity.ToTable("BuzzerPressLog");
+
+            entity.Property(e => e.PressTimeFormatted)
+                .HasMaxLength(4000)
+                .HasComputedColumnSql("(format((([PressTime] AT TIME ZONE 'UTC') AT TIME ZONE 'Pakistan Standard Time'),'hh:mm:ss.fffffff tt'))", false);
+            entity.Property(e => e.TeamName).HasMaxLength(100);
+        });
+
         modelBuilder.Entity<Competition>(entity =>
         {
             entity.HasKey(e => e.CompetitionId).HasName("PK__Competit__BB383B580BC87E3F");
