@@ -66,44 +66,57 @@ namespace MapProjectApi.Controllers
             return Ok(questionDtos);
         }
         [HttpPost("AddQuestionWithOptions")]
-        public async Task<IActionResult> AddQuestionWithOptions([FromBody] QuestionDtoListVM model)
-            {
-            if (model == null)
-                {
-                return BadRequest("Invalid data.");
-                }
+       public async Task<IActionResult> AddQuestionWithOptions([FromBody] QuestionDtoListVM model)
+{
+    if (model == null)
+    {
+        return BadRequest("Invalid data.");
+    }
 
-            // Create and save the question
-            var question = new Question
-                {
-                SubjectCode = model.SubjectCode,
-                TopicId = model.TopicId,
-                UserId = model.UserId,
-                Difficulty = model.Difficulty,
-                Text = model.Text,
-                Type = model.Type,
-                Marks = model.Marks
-                };
+    // Create and save the question
+    var question = new Question
+    {
+        SubjectCode = model.SubjectCode,
+        TopicId = model.TopicId,
+        UserId = model.UserId,
+        Difficulty = model.Difficulty,
+        Text = model.Text,
+        Type = model.Type,
+        Marks = model.Marks
+    };
 
-            _context.Questions.Add(question);
-            await _context.SaveChangesAsync();  
+    _context.Questions.Add(question);
+    await _context.SaveChangesAsync();  // Save to get the generated ID
 
-           
-            if (model.Type == 2 && model.Options != null && model.Options.Any())
-                {
-                var options = model.Options.Select(opt => new QuestionOption
-                    {
-                    QuestionId = question.Id, 
-                    Option = opt.Option,
-                    IsCorrect = opt.IsCorrect
-                    }).ToList();
+    // If it's a multiple-choice question (type 2), save options
+    if (model.Type == 2 && model.Options != null && model.Options.Any())
+    {
+        var options = model.Options.Select(opt => new QuestionOption
+        {
+            QuestionId = question.Id,
+            Option = opt.Option,
+            IsCorrect = opt.IsCorrect
+        }).ToList();
 
-                _context.QuestionOptions.AddRange(options);
-                await _context.SaveChangesAsync();
-                }
+        _context.QuestionOptions.AddRange(options);
+        await _context.SaveChangesAsync();
+    }
 
-            return Ok(new { message = "Question added successfully", QuestionId = question.Id });
-            }
+    // If it's a code-output question (type 3), save expected output
+    if (model.Type == 3 && !string.IsNullOrWhiteSpace(model.Output))
+    {
+        var output = new QuestionOutput
+        {
+            QuestionId = question.Id,
+            Output = model.Output
+        };
+
+        _context.QuestionOutputs.Add(output);
+        await _context.SaveChangesAsync();
+    }
+
+    return Ok(new { message = "Question added successfully", QuestionId = question.Id });
+}
 
 
         [HttpGet("GetAllQuestions")]
@@ -282,6 +295,23 @@ namespace MapProjectApi.Controllers
             return Ok(questions);
             }
 
+        [HttpGet("GetQuestionOutput/{questionId}")]
+        public async Task<IActionResult> GetQuestionOutput(int questionId)
+            {
+            var output = await _context.QuestionOutputs
+                .Where(q => q.QuestionId == questionId)
+                .Select(q => new { q.Output })
+                .FirstOrDefaultAsync();
+
+            if (output == null)
+                {
+                return NotFound(new { Message = "Output not found for this question ID." });
+                }
+
+            return Ok(output);
+            }
         }
+
     }
+    
     

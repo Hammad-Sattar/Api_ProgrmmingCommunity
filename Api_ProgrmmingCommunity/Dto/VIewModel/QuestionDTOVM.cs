@@ -8,6 +8,8 @@
     public string? Text { get; set; }
     public int? Type { get; set; }
     public int? Marks { get; set; }
+
+    public string Output { get; set; }
     public List<QuestionOptionDTOVM> Options { get; set; }
     }
 
