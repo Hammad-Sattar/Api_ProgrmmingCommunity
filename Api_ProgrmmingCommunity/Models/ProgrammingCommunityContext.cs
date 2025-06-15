@@ -35,6 +35,8 @@ public partial class ProgrammingCommunityContext : DbContext
 
     public virtual DbSet<QuestionOption> QuestionOptions { get; set; }
 
+    public virtual DbSet<QuestionOutput> QuestionOutputs { get; set; }
+
     public virtual DbSet<RoundQualificationCriterion> RoundQualificationCriteria { get; set; }
 
     public virtual DbSet<RoundResult> RoundResults { get; set; }
@@ -298,6 +300,20 @@ public partial class ProgrammingCommunityContext : DbContext
             entity.HasOne(d => d.Question).WithMany(p => p.QuestionOptions)
                 .HasForeignKey(d => d.QuestionId)
                 .HasConstraintName("FK__QuestionO__quest__5CD6CB2B");
+        });
+
+        modelBuilder.Entity<QuestionOutput>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__Question__3213E83F45F6FC05");
+
+            entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.IsDeleted)
+                .HasDefaultValue(false)
+                .HasColumnName("isDeleted");
+            entity.Property(e => e.Output)
+                .IsUnicode(false)
+                .HasColumnName("output");
+            entity.Property(e => e.QuestionId).HasColumnName("question_id");
         });
 
         modelBuilder.Entity<RoundQualificationCriterion>(entity =>
