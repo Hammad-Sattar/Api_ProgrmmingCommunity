@@ -9,7 +9,7 @@ namespace Api_ProgrmmingCommunity.Dto
 
         public string? Password { get; set; }
 
-      
+      public int? Level { get; set; }
 
         public int? Role { get; set; }
 

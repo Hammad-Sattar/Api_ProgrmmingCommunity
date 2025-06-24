@@ -120,7 +120,7 @@ namespace Api_ProgrmmingCommunity.Controllers
             return NoContent();
             }
         [HttpGet("GetAttemptedQuestionsByRound/{roundId}")]
-        [HttpGet]
+        
         public async Task<IActionResult> GetAttemptedQuestionsByRound(int roundId, int? teamId = null)
             {
             var query = _context.CompetitionAttemptedQuestions

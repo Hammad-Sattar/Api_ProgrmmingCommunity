@@ -110,8 +110,10 @@ namespace Api_ProgrmmingCommunity.Controllers
                 Phonenum = userDto.Phonenum,
                 Firstname = userDto.Firstname,
                 Lastname = userDto.Lastname,
-               
-               
+                Level = userDto?.Level ?? 0
+
+
+
                 };
 
             _context.Users.Add(user);

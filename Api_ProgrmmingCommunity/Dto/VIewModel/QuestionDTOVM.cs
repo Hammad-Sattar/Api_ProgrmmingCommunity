@@ -9,8 +9,8 @@
     public int? Type { get; set; }
     public int? Marks { get; set; }
 
-    public string Output { get; set; }
-    public List<QuestionOptionDTOVM> Options { get; set; }
+    public string? Output { get; set; }
+    public List<QuestionOptionDTOVM> ?Options { get; set; }
     }
 
 public class QuestionOptionDTOVM

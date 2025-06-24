@@ -35,6 +35,41 @@ namespace YourNamespace.Controllers
             return Ok(rounds);
             }
 
+
+        [HttpGet("IsFirstRound/{roundId}")]
+        public async Task<ActionResult<bool>> IsFirstRound(int roundId)
+            {
+            var isFirstRound = await _context.CompetitionRounds
+                .Where(r => r.Id == roundId)
+                .Select(r => r.RoundNumber == 1)
+                .FirstOrDefaultAsync();
+
+            return Ok(isFirstRound);
+            }
+
+
+        [HttpGet("GetRoundById/{roundId}")]
+        public async Task<ActionResult<CompetitionRoundDTO>> GetRoundById(int roundId)
+            {
+            var round = await _context.CompetitionRounds
+                .Where(r => r.Id == roundId)
+                .Select(r => new CompetitionRoundDTO
+                    {
+                    Id = r.Id,
+                    CompetitionId = r.CompetitionId,
+                    RoundNumber = r.RoundNumber,
+                    RoundType = r.RoundType,
+                    Date = r.Date
+                    })
+                .FirstOrDefaultAsync();
+
+            if (round == null)
+                return NotFound($"Round with ID {roundId} not found.");
+
+            return Ok(round);
+            }
+
+
         // GET: api/CompetitionRound/GetAllRoundsByCompetitionId/{competitionId}
         [HttpGet("GetAllRoundsByCompetitionId/{competitionId}")]
         public async Task<ActionResult<IEnumerable<CompetitionRoundDTO>>> GetAllRoundsByCompetitionId(int competitionId)

@@ -33,6 +33,25 @@ namespace Api_ProgrmmingCommunity.Controllers
                 .ToListAsync();
             }
 
+
+
+        [HttpGet("GetTeamName/{teamId}")]
+        public async Task<ActionResult<string>> GetTeamName(int teamId)
+            {
+            var team = await _context.Teams
+                .Where(t => (t.IsDeleted == false || t.IsDeleted == null) && t.TeamId == teamId)
+                .Select(t => t.TeamName)
+                .FirstOrDefaultAsync();
+
+            if (team == null)
+                {
+                return NotFound("Team not found.");
+                }
+
+            return Ok(team);
+            }
+
+
         [HttpGet("GetTeamIdByUserId/{userId}")]
         public IActionResult GetTeamIdByUserId(int userId)
             {
