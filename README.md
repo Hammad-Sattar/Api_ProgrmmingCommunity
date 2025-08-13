@@ -1,7 +1,7 @@
 
 # Programming Community Backend API
 
-![.NET Core](https://img.shields.io/badge/.NET%20Core-6.0-blue)
+![.NET Core](https://img.shields.io/badge/.NET%20Core-8.0-blue)
 ![SQL Server](https://img.shields.io/badge/SQL%20Server-2019-%23CC2927)
 ![License](https://img.shields.io/badge/License-MIT-green)
 
@@ -18,7 +18,7 @@ A robust backend API for the Programming Community App, enabling task management
 
 ## Tech Stack
 
-- **Backend**: .NET Core 6.0 Web API
+- **Backend**: .NET Core 8.0 Web API
 - **Database**: SQL Server 2019
 - **Authentication**: JWT Bearer Tokens
 - **ORM**: Entity Framework Core
@@ -29,7 +29,7 @@ A robust backend API for the Programming Community App, enabling task management
 
 ### Prerequisites
 
-- [.NET 6.0 SDK](https://dotnet.microsoft.com/download)
+- [.NET 8.0 SDK](https://dotnet.microsoft.com/download)
 - [SQL Server 2019](https://www.microsoft.com/en-us/sql-server/sql-server-downloads)
 - [Postman](https://www.postman.com/downloads/) (for API testing)
 
